@@ -1,13 +1,14 @@
 Rails.application.routes.draw do
-  get 'personalities/new'
-  get 'personalities/create'
-  get 'personalities/show'
-  get 'personalities/edit'
-  get 'personalities/update'
-  get 'personalities/index'
   devise_for :users
 
   root to: "pages#home" # page d'accueil publique
+
+  # Personalities (Personnalités)
+  resources :personalities, exept: [:destroy] do
+    collection do
+      get :my_personality # route pour la personnalité de l'utilisateur
+    end
+  end
 
   # Rêves (Dreams)
   resources :dreams do
