@@ -1,0 +1,13 @@
+<h1>Mes rêves</h1>
+
+<%= link_to "Nouveau rêve", new_dream_path, class: "btn btn-primary" %>
+
+<% @dreams.each do |dream| %>
+  <div>
+    <strong><%= dream.title %></strong>
+    (<%= dream.private ? "privé" : "public" %>)
+    <%= link_to "Voir", dream_path(dream) %> |
+    <%= link_to "Modifier", edit_dream_path(dream) %> |
+    <%= link_to "Supprimer", dream_path(dream), method: :delete, data: { confirm: "Confirmer ?" } %>
+  </div>
+<% end %>

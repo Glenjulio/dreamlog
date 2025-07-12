@@ -1,0 +1,10 @@
+<!-- app/views/dreams/index.html.erb -->
+<h1>Rêves publics</h1>
+
+<% @dreams.each do |dream| %>
+  <div>
+    <strong><%= dream.title %></strong><br>
+    par <%= dream.user.first_name.presence || dream.user.email %><br>
+    <%= link_to "Voir", dream_path(dream) %>
+  </div>
+<% end %>

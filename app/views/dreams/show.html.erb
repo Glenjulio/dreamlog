@@ -1,0 +1,7 @@
+<h1><%= @dream.title %></h1>
+
+<p><strong>Tags :</strong> <%= @dream.tags %></p>
+<p><strong>Privé :</strong> <%= @dream.private ? "Oui" : "Non" %></p>
+<p><strong>Auteur :</strong> <%= @dream.user.first_name.presence || @dream.user.email %></p>
+
+<%= link_to "Retour", dreams_path %>

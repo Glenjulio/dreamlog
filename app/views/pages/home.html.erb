@@ -1,0 +1,8 @@
+<h1>Bienvenue sur DreamLog</h1>
+
+<% if user_signed_in? %>
+  <p>Bonjour <%= current_user.first_name.presence || current_user.email %> !</p>
+  <%= link_to "Créer un rêve", new_dream_path, class: "btn btn-primary" %>
+<% else %>
+  <p>Connecte-toi pour commencer à enregistrer tes rêves.</p>
+<% end %>

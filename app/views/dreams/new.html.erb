@@ -1,0 +1,22 @@
+<h1>Enregistrer un rêve</h1>
+
+<%= form_with model: @dream do |form| %>
+  <div>
+    <%= form.label :title, "Titre du rêve" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :tags, "Tags" %>
+    <%= form.text_field :tags %>
+  </div>
+
+  <div>
+    <%= form.label :private, "Privé ?" %>
+    <%= form.check_box :private %>
+  </div>
+
+  <div>
+    <%= form.submit "Enregistrer" %>
+  </div>
+<% end %>
