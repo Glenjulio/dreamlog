@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'personalities/new'
+  get 'personalities/create'
+  get 'personalities/show'
+  get 'personalities/edit'
+  get 'personalities/update'
+  get 'personalities/index'
   devise_for :users
 
   root to: "pages#home" # page d'accueil publique
