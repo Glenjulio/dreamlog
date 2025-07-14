@@ -12,9 +12,8 @@
     <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" %>
   </head>
 
-
-  <body class="bg-dark text-white d-flex flex-column min-vh-100">
-    <main class="container flex-grow-1 d-flex flex-column justify-content-center align-items-center py-4">
+  <body class="text-white d-flex flex-column min-vh-100">
+    <main class="w-100 flex-grow-1 d-flex flex-column justify-content-center align-items-center py-4" style="z-index: 1; position: relative;">
       <%= yield %>
     </main>
   </body>
