@@ -1,0 +1,10 @@
+<h1>Mon profil</h1>
+
+<p><strong>Nom :</strong> <%= current_user.first_name %> <%= current_user.last_name %></p>
+<p><strong>Email :</strong> <%= current_user.email %></p>
+
+<!-- Ajouter d'autres infos selon ce que tu exposes -->
+
+<div class="mt-4">
+  <%= button_to "Déconnexion", destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
+</div>

@@ -1,13 +1,21 @@
 <h1>Mes rêves</h1>
 
-<%= link_to "Nouveau rêve", new_dream_path, class: "btn btn-primary" %>
+<div class="mb-3">
+  <%= link_to "Nouveau rêve", new_dream_path, class: "btn btn-primary me-2" %>
+  <%= link_to "Tous les rêves", dreams_path, class: "btn btn-outline-secondary" %>
+</div>
 
 <% @dreams.each do |dream| %>
-  <div>
-    <strong><%= dream.title %></strong>
-    (<%= dream.private ? "privé" : "public" %>)
-    <%= link_to "Voir", dream_path(dream) %> |
-    <%= link_to "Modifier", edit_dream_path(dream) %> |
-    <%= link_to "Supprimer", dream_path(dream), method: :delete, data: { confirm: "Confirmer ?" } %>
+  <div class="card mb-2">
+    <div class="card-body">
+      <h5 class="card-title"><%= dream.title %></h5>
+      <p class="card-text"><strong>Visibilité :</strong> <%= dream.private ? "Privé" : "Public" %></p>
+      <%= link_to "Voir", dream_path(dream), class: "btn btn-sm btn-outline-light me-2" %>
+      <%= link_to "Modifier", edit_dream_path(dream), class: "btn btn-sm btn-outline-warning me-2" %>
+      <%= link_to "Supprimer", dream_path(dream), method: :delete, data: { confirm: "Confirmer ?" }, class: "btn btn-sm btn-outline-danger" %>
+    </div>
   </div>
 <% end %>
+
+<!-- Navbar -->
+<%= render "shared/bottom_nav" %>

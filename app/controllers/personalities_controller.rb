@@ -1,7 +1,7 @@
 class PersonalitiesController < ApplicationController
     before_action :authenticate_user!
   before_action :set_personality, only: [:show, :edit, :update]
-  before_action :ensure_owner, only: [:edit, :update, :destroy]
+  # before_action :ensure_owner, only: [:destroy]
 
   def index
     @personalities = Personality.includes(:user).all
