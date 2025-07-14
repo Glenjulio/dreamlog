@@ -1,14 +1,17 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  root to: "pages#home" # page d'accueil publique
+  root to: "pages#home"
 
   # Personalities (Personnalités)
-  resources :personalities, exept: [:destroy] do
+  resources :personalities, except: [:destroy] do
     collection do
       get :my_personality # route pour la personnalité de l'utilisateur
     end
   end
+
+  # Alias pour la page profil
+  get "/profile", to: "personalities#my_personality", as: :profile
 
   # Rêves (Dreams)
   resources :dreams do

@@ -47,6 +47,7 @@ gem "bootsnap", require: false
 gem 'devise'
 gem 'simple_form'
 gem 'hotwire-rails'
+gem "sassc-rails"
 
 
 group :development, :test do
