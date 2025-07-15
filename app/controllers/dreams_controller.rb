@@ -1,4 +1,6 @@
 class DreamsController < ApplicationController
+  before_action :authenticate_user!
+
   def mydreams
     @dreams = current_user.dreams
   end
@@ -29,5 +31,4 @@ class DreamsController < ApplicationController
   def dream_params
     params.require(:dream).permit(:title, :tags, :private)
   end
-
 end
