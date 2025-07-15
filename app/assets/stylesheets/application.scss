@@ -22,6 +22,21 @@ h1, h2 {
   text-align: center;
 }
 
+/* Formulaires : espacement entre label et champ */
+label.string,
+label.optional,
+label.required {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Espacement entre chaque champ */
+input,
+textarea,
+select {
+  margin-bottom: 1.5rem;
+}
+
 /* Grille en overlay */
 body::before {
   content: "";
