@@ -1,23 +1,21 @@
-<h1>Enregistrer un rêve</h1>
+<h1 class="text-center mb-4">New Dream</h1>
 
-<%= form_with model: @dream do |form| %>
-  <div>
-    <%= form.label :title, "Titre du rêve" %>
-    <%= form.text_field :title %>
+<%= simple_form_for(@dream) do |f| %>
+  <div class="mb-4">
+    <%= f.input :title, label: "Title" %>
   </div>
 
-  <div>
-    <%= form.label :tags, "Tags" %>
-    <%= form.text_field :tags %>
+  <div class="mb-4">
+    <%= f.input :tags, label: "Tags (optional)" %>
   </div>
 
-  <div>
-    <%= form.label :private, "Privé ?" %>
-    <%= form.check_box :private %>
+  <div class="mb-4">
+    <%= f.label :private, "Private?", class: "form-label d-block" %>
+    <%= f.check_box :private, class: "form-check-input" %>
   </div>
 
-  <div>
-    <%= form.submit "Enregistrer" %>
+  <div class="text-center mt-5">
+    <%= f.button :submit, "Save", class: "btn px-4 py-2 text-white", style: "background-color: #796BDA; border: none;" %>
   </div>
 <% end %>
 
