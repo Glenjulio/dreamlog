@@ -1,4 +1,6 @@
 class DreamsController < ApplicationController
+  before_action :authenticate_user!
+
   def mydreams
     @dreams = current_user.dreams
   end
