@@ -9,6 +9,7 @@ class DreamsController < ApplicationController
 
   def new
     @dream = Dream.new
+    @dream.build_transcription  # nécessaire pour afficher le champ dans le formulaire
   end
 
   def create
@@ -24,10 +25,28 @@ class DreamsController < ApplicationController
     @dream = Dream.find(params[:id])
   end
 
+  def edit
+    @dream = Dream.find(params[:id])
+    @dream.build_transcription unless @dream.transcription
+  end
+
+  def update
+    @dream = Dream.find(params[:id])
+    if @dream.update(dream_params)
+      redirect_to mydreams_path, notice: "Dream updated successfully"
+    else
+      render :edit
+    end
+  end
+
   private
 
   def dream_params
-    params.require(:dream).permit(:title, :tags, :private)
+    params.require(:dream).permit(
+      :title,
+      :tags,
+      :private,
+      transcription_attributes: [:content]
+    )
   end
-
 end

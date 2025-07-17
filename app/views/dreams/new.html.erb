@@ -1,25 +1,31 @@
-<h1>Enregistrer un rêve</h1>
+<h1>Log a dream</h1>
 
-<%= form_with model: @dream do |form| %>
+<%= form_with model: @dream, local: true do |form| %>
   <div>
-    <%= form.label :title, "Titre du rêve" %>
+    <%= form.label :title, "Dream title" %>
     <%= form.text_field :title %>
   </div>
 
   <div>
-    <%= form.label :tags, "Tags" %>
+    <%= form.label :tags, "Tags (comma-separated)" %>
     <%= form.text_field :tags %>
   </div>
 
   <div>
-    <%= form.label :private, "Privé ?" %>
+    <%= form.label :private, "Private?" %>
     <%= form.check_box :private %>
   </div>
 
   <div>
-    <%= form.submit "Enregistrer" %>
+    <%= form.fields_for :transcription do |t| %>
+      <%= t.label :content, "Manual transcription (optional)" %><br>
+      <%= t.text_area :content, rows: 10, placeholder: "Write the full text of your dream here..." %>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.submit "Save" %>
   </div>
 <% end %>
 
-<!-- Navbar -->
 <%= render "shared/bottom_nav" %>

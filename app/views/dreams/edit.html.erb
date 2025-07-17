@@ -1,2 +1,31 @@
-<h1>Dreams#edit</h1>
-<p>Find me in app/views/dreams/edit.html.erb</p>
+<h1>Edit your dream</h1>
+
+<%= form_with model: @dream, local: true do |form| %>
+  <div>
+    <%= form.label :title, "Dream title" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :tags, "Tags (comma-separated)" %>
+    <%= form.text_field :tags %>
+  </div>
+
+  <div>
+    <%= form.label :private, "Private?" %>
+    <%= form.check_box :private %>
+  </div>
+
+  <div>
+    <%= form.fields_for :transcription do |t| %>
+      <%= t.label :content, "Manual transcription (optional)" %><br>
+      <%= t.text_area :content, rows: 10, placeholder: "Edit the transcription of your dream..." %>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.submit "Update" %>
+  </div>
+<% end %>
+
+<%= render "shared/bottom_nav" %>
