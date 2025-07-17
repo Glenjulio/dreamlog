@@ -14,10 +14,15 @@
     <%= f.check_box :private, class: "form-check-input" %>
   </div>
 
+  <%= f.simple_fields_for :transcription do |t| %>
+    <div class="mb-4">
+      <%= t.input :content, as: :text, label: "Manual transcription (optional)", input_html: { rows: 10, placeholder: "Write the full text of your dream here..." } %>
+    </div>
+  <% end %>
+
   <div class="text-center mt-5">
     <%= f.button :submit, "Save", class: "btn px-4 py-2 text-white", style: "background-color: #796BDA; border: none;" %>
   </div>
 <% end %>
 
-<!-- Navbar -->
 <%= render "shared/bottom_nav" %>
