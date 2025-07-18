@@ -1,9 +1,10 @@
 class Dream < ApplicationRecord
   belongs_to :user
   has_one :transcription, dependent: :destroy
-  accepts_nested_attributes_for :transcription
+  accepts_nested_attributes_for :transcription, allow_destroy: true
 
-  validates :title, presence: true, length: { minimum: 3 }
+  validates :title, presence: true, length: { minimum: 3, maximum: 200 }
+  validates :user, presence: true
 
   enum status: {
     draft: 'draft',
@@ -12,6 +13,6 @@ class Dream < ApplicationRecord
     completed: 'completed'
   }
 
-  scope :public_dreams, -> { where(private: false) }
-  scope :recent, -> { order(created_at: :desc) }
+  scope :public_dreams, -> { where(private: [false, nil]) }
+  scope :private_dreams, -> { where(private: true) }
 end
