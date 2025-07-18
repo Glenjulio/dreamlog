@@ -1,6 +1,6 @@
 class Transcription < ApplicationRecord
   belongs_to :dream
-  has_many :analyses, dependent: :destroy
+  has_many :analyzes, dependent: :destroy
 
   validates :content, presence: true, length: { minimum: 5, maximum: 10000 }
   validates :dream, presence: true

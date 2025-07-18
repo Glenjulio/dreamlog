@@ -1,7 +1,7 @@
 class PersonalitiesController < ApplicationController
-    before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_personality, only: [:show, :edit, :update]
-  # before_action :ensure_owner, only: [:destroy]
+  before_action :check_existing_personality, only: [:new, :create]
 
   def index
     @personalities = Personality.includes(:user).all
@@ -11,40 +11,25 @@ class PersonalitiesController < ApplicationController
   end
 
   def new
-    if current_user.personality.present?
-      redirect_to personality_path(current_user.personality),
-                  notice: "Vous avez déjà une personnalité."
-      return
-    end
-
     @personality = current_user.build_personality
   end
 
   def create
-    if current_user.personality.present?
-      redirect_to personality_path(current_user.personality),
-                  notice: "Vous avez déjà une personnalité."
-      return
-    end
-
     @personality = current_user.build_personality(personality_params)
 
     if @personality.save
-      redirect_to personality_path(@personality),
-                  notice: "Personnalité créée avec succès."
+      redirect_to @personality, notice: "Personnalité créée avec succès."
     else
       render :new, status: :unprocessable_entity
     end
   end
-
 
   def edit
   end
 
   def update
     if @personality.update(personality_params)
-      redirect_to personality_path(@personality),
-                  notice: "Personnalité mise à jour avec succès."
+      redirect_to @personality, notice: "Personnalité mise à jour avec succès."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -52,10 +37,9 @@ class PersonalitiesController < ApplicationController
 
   def my_personality
     if current_user.personality.present?
-      redirect_to personality_path(current_user.personality)
+      redirect_to current_user.personality
     else
-      redirect_to new_personality_path,
-                  notice: "Vous n'avez pas encore de personnalité."
+      redirect_to new_personality_path, notice: "Vous n'avez pas encore de personnalité."
     end
   end
 
@@ -65,10 +49,10 @@ class PersonalitiesController < ApplicationController
     @personality = Personality.find(params[:id])
   end
 
-  def ensure_owner
-    unless @personality.user == current_user
-      redirect_to personalities_path, alert: "Accès non autorisé."
-    end
+  def check_existing_personality
+    return unless current_user.personality.present?
+
+    redirect_to current_user.personality, notice: "Vous avez déjà une personnalité."
   end
 
   def personality_params
