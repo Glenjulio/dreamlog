@@ -1,3 +1,4 @@
+<!-- app/views/shared/_bottom_nav.html.erb -->
 <nav class="w-100" style="position: fixed; bottom: 0; left: 0; right: 0; background: transparent; z-index: 10;">
   <div class="container-fluid py-2 d-flex justify-content-center align-items-center gap-5">
     <%= link_to mydreams_path do %>
@@ -8,8 +9,14 @@
       <i class="fas fa-plus"></i>
     <% end %>
 
-    <%= link_to profile_path do %>
-      <i class="fas fa-cog fa-2x text-white"></i>
+    <% if user_signed_in? %>
+      <%= link_to edit_user_registration_path do %>
+        <i class="fas fa-cog fa-2x text-white"></i>
+      <% end %>
+    <% else %>
+      <%= link_to new_user_session_path do %>
+        <i class="fas fa-sign-in-alt fa-2x text-white"></i>
+      <% end %>
     <% end %>
   </div>
 </nav>
