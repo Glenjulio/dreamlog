@@ -21,11 +21,11 @@ Rails.application.routes.draw do
     resource :transcription, only: [:show, :edit, :update]
 
     # Analyses liées au rêve
-    resources :analyses, only: [:create, :show]
+    resources :analyses, only: [:show]  # Affichage de l'analyse uniquement
   end
 
-  # Routes pour générer et afficher l'analyse
-  post 'dreams/:dream_id/analyses/generate', to: 'analyses#create', as: 'generate_analysis'
+  # Route pour générer l'analyse
+  post 'dreams/:dream_id/analyses/generate', to: 'analyses#generate', as: 'generate_analysis'
 
   get '/mydreams', to: 'dreams#mydreams', as: :mydreams
   get "up" => "rails/health#show", as: :rails_health_check
