@@ -7,7 +7,7 @@
   <p><%= @analysis.content %></p>
 <% else %>
   <p>No analysis found for this dream.</p>
-  <%= link_to 'Generate Analysis', generate_analysis_dream_transcription_path(@dream), method: :post, class: 'btn btn-warning' %>
+  <%= link_to 'Generate Analysis', generate_analysis_path(@dream), method: :post, class: 'btn btn-warning' %>
 <% end %>
 
 <div>

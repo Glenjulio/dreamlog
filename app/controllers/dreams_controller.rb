@@ -2,6 +2,7 @@ class DreamsController < ApplicationController
   before_action :authenticate_user!
 
   def mydreams
+    puts current_user.inspect  # Vérifie que current_user est bien un User
     @dreams = current_user.dreams
   end
 

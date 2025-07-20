@@ -7,8 +7,13 @@
   </div>
 
   <div>
-    <!-- Lien vers la page d'analyse -->
-    <%= link_to 'Go to Analysis', dream_analyses_path(@dream), class: 'btn btn-success' %>
+    <% if @transcription.analyses.any? %>
+      <!-- Si une analyse existe déjà, lien vers l'affichage -->
+      <%= link_to 'View Analysis', dream_analysis_path(@dream, @transcription.analyses.first), class: 'btn btn-success' %>
+    <% else %>
+      <!-- Si aucune analyse n'existe, bouton pour en créer une -->
+      <%= button_to 'Generate Analysis', generate_analysis_path(@dream), method: :post, class: 'btn btn-warning' %>
+    <% end %>
 
     <%= link_to 'Edit Transcription', edit_dream_transcription_path(@dream), class: 'btn btn-primary' %>
   </div>
