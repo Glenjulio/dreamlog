@@ -3,13 +3,14 @@ class AnalysesController < ApplicationController
 
   def show
     @analysis = Analysis.find(params[:id])
+    @dream = Dream.find(params[:dream_id])
     redirect_to mydreams_path, alert: "Analysis not found" unless @analysis
   end
 
   def create
     # Créer une analyse indépendamment d'une transcription
     @dream = Dream.find(params[:dream_id])
-    @transcription = @dream.transcription # Si nécessaire, on lierait l'analyse à une transcription
+    @transcription = @dream.transcription
     @analysis = Analysis.create!(content: "Generated analysis for dream #{@dream.title}")
 
     # Redirection ou traitement après création

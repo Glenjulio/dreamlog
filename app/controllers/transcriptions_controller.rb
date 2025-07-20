@@ -9,8 +9,8 @@ class TranscriptionsController < ApplicationController
                   notice: "No transcription found. Please add one or transcribe the audio."
       return
     end
-    
-    @analysis = @transcription.analyses.first  # Récupération de l'analyse associée
+
+    @analysis = @transcription.analysis
   end
 
   def edit
