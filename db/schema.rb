@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_12_122031) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_18_160733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,13 +24,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_12_122031) do
 
   create_table "dreams", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.string "audio_file"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "tags"
     t.boolean "private"
+    t.index ["created_at"], name: "index_dreams_on_created_at"
+    t.index ["private"], name: "index_dreams_on_private"
     t.index ["user_id"], name: "index_dreams_on_user_id"
   end
 
@@ -49,12 +51,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_12_122031) do
 
   create_table "transcriptions", force: :cascade do |t|
     t.bigint "dream_id", null: false
-    t.text "content"
+    t.text "content", null: false
     t.string "mood"
     t.string "tag"
     t.integer "rating"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_transcriptions_on_created_at"
     t.index ["dream_id"], name: "index_transcriptions_on_dream_id"
   end
 
