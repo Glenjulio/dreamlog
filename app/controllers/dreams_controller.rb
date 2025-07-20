@@ -17,12 +17,20 @@ class DreamsController < ApplicationController
 
   def create
     @dream = current_user.dreams.build(dream_params)
+
     if @dream.save
-      redirect_to mydreams_path, notice: "Rêve créé avec succès"
+      respond_to do |format|
+        format.html { redirect_to mydreams_path, notice: "Rêve créé avec succès" }
+        format.json { render json: { success: true, id: @dream.id }, status: :created }
+      end
     else
-      render :new
+      respond_to do |format|
+        format.html { render :new }
+        format.json { render json: { errors: @dream.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
+
 
   def show
     @dream = Dream.find(params[:id])
@@ -42,6 +50,15 @@ class DreamsController < ApplicationController
     end
   end
 
+  protect_from_forgery except: :upload_audio # for JS uploads
+
+  def upload_audio
+    dream = current_user.dreams.create! # or find_or_initialize_by(...) if editing existing
+    dream.audio.attach(params[:audio])
+
+    render json: { success: true, id: dream.id }, status: :ok
+  end
+
   private
 
   def dream_params
@@ -49,6 +66,7 @@ class DreamsController < ApplicationController
       :title,
       :tags,
       :private,
+      :audio,
       transcription_attributes: [:content]
     )
   end

@@ -1,6 +1,7 @@
 class Dream < ApplicationRecord
   belongs_to :user
   has_one :transcription, dependent: :destroy
+  has_one_attached :audio
   accepts_nested_attributes_for :transcription, allow_destroy: true
 
   validates :title, presence: true, length: { minimum: 3, maximum: 200 }
