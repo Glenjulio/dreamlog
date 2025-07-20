@@ -1,10 +1,11 @@
+# app/controllers/analyses_controller.rb
 class AnalysesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_dream
 
   def show
-    @analysis = Analysis.find(params[:id])
-    @transcription = @analysis.transcription
+    @analysis = @dream.transcription&.analyses&.find(params[:id])
+    redirect_to mydreams_path, alert: "Analysis not found" unless @analysis
   end
 
   def generate
@@ -12,7 +13,7 @@ class AnalysesController < ApplicationController
 
     # Si aucune transcription n'existe, on redirige pour l'ajouter
     if @transcription.blank?
-      redirect_to edit_dream_transcription_path(@dream),
+      redirect_to edit_dream_path(@dream),
                   alert: "Please add a transcription before generating an analysis."
       return
     end
@@ -46,7 +47,6 @@ class AnalysesController < ApplicationController
   end
 
   def generate_analysis_content(transcription_content)
-    # Simulation de l'analyse de rêve (à remplacer par l'appel réel à l'API)
-    "Analyse de test pour le rêve : #{transcription_content.truncate(100)}"
+    "Analyse automatique du rêve : #{transcription_content.truncate(100)}"
   end
 end

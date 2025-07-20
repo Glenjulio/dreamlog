@@ -1,3 +1,4 @@
+# config/routes.rb
 Rails.application.routes.draw do
   devise_for :users
 
@@ -5,7 +6,7 @@ Rails.application.routes.draw do
 
   resources :personalities, except: [:destroy] do
     collection do
-      get :my_personality # route pour la personnalité de l'utilisateur
+      get :my_personality
     end
   end
 
@@ -13,24 +14,22 @@ Rails.application.routes.draw do
   get "/profile", to: "personalities#my_personality", as: :profile
 
   resources :dreams do
-    member do
-      patch :private
-      patch :public
-    end
-
     resource :transcription, only: [:show, :edit, :update]
 
-    # Analyses liées au rêve
-    resources :analyses, only: [:show]  # Affichage de l'analyse uniquement
+    resources :analyses, only: [:show] do
+      collection do
+        post :generate, to: 'analyses#generate'
+      end
+    end
   end
 
   # Route pour générer l'enregistrement
   post 'dreams/upload_audio', to: 'dreams#upload_audio'
-  direct_uploads = Rails.application.config.active_storage.routes
-  draw(:active_storage) unless direct_uploads.nil?
 
-  # Route pour générer l'analyse
-  post 'dreams/:dream_id/analyses/generate', to: 'analyses#generate', as: 'generate_analysis'
+  # Active Storage routes
+  if Rails.application.config.respond_to?(:active_storage) && Rails.application.config.active_storage.routes
+    draw(:active_storage)
+  end
 
   get '/mydreams', to: 'dreams#mydreams', as: :mydreams
   get "up" => "rails/health#show", as: :rails_health_check

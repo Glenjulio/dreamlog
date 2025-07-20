@@ -1,18 +1,18 @@
 class DreamsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_dream, only: [:show, :edit, :update, :destroy]
 
   def mydreams
-    puts current_user.inspect  # Vérifie que current_user est bien un User
-    @dreams = current_user.dreams
+    @dreams = current_user.dreams.order(created_at: :desc)
   end
 
   def index
-    @dreams = Dream.where(private: false)
+    @dreams = Dream.where(private: false).order(created_at: :desc)
   end
 
   def new
     @dream = Dream.new
-    @dream.build_transcription  # nécessaire pour afficher le champ dans le formulaire
+    @dream.build_transcription
   end
 
   def create
@@ -31,18 +31,14 @@ class DreamsController < ApplicationController
     end
   end
 
-
   def show
-    @dream = Dream.find(params[:id])
   end
 
   def edit
-    @dream = Dream.find(params[:id])
     @dream.build_transcription unless @dream.transcription
   end
 
   def update
-    @dream = Dream.find(params[:id])
     if @dream.update(dream_params)
       redirect_to mydreams_path, notice: "Dream updated successfully"
     else
@@ -50,16 +46,25 @@ class DreamsController < ApplicationController
     end
   end
 
-  protect_from_forgery except: :upload_audio # for JS uploads
+  def destroy
+    @dream.destroy
+    redirect_to mydreams_path, notice: "Dream deleted successfully"
+  end
+
+  protect_from_forgery except: :upload_audio
 
   def upload_audio
-    dream = current_user.dreams.create! # or find_or_initialize_by(...) if editing existing
+    dream = current_user.dreams.create!
     dream.audio.attach(params[:audio])
 
     render json: { success: true, id: dream.id }, status: :ok
   end
 
   private
+
+  def set_dream
+    @dream = current_user.dreams.find(params[:id])
+  end
 
   def dream_params
     params.require(:dream).permit(
