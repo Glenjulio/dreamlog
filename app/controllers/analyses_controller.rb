@@ -3,6 +3,7 @@ class AnalysesController < ApplicationController
 
   def show
     @analysis = Analysis.find(params[:id])
+    @dream = Dream.find(params[:dream_id])  # ← Ajouter cette ligne
     redirect_to mydreams_path, alert: "Analysis not found" unless @analysis
   end
 
