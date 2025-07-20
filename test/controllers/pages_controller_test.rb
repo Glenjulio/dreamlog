@@ -26,8 +26,8 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get analyze" do
-    get pages_analyze_url
+  test "should get analyse" do
+    get pages_analyse_url
     assert_response :success
   end
 
