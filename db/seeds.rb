@@ -1,9 +1,5 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Transcriptions de rêves
+Transcription.create!(content: "J'ai rêvé que j'étais dans une forêt sombre, poursuivi par un loup. J'avais peur, mais je n'arrivais pas à courir.")
+Transcription.create!(content: "Je marchais dans une grande ville, entouré de gens que je ne reconnaissais pas. J'avais l'impression d'être invisible.")
+Transcription.create!(content: "Je volais au-dessus de la mer, en observant les vagues et les oiseaux. Je me sentais libre et paisible.")
+Transcription.create!(content: "Un vieux livre m'a été donné, et chaque page que je tournais se remplissait de lumière. J'ai ressenti un grand calme.")
