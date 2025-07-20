@@ -14,6 +14,10 @@ Rails.application.routes.draw do
   get "/profile", to: "personalities#my_personality", as: :profile
 
   resources :dreams do
+    member do
+      post :transcribe
+    end
+
     resource :transcription, only: [:show, :edit, :update]
 
     resources :analyses, only: [:show] do

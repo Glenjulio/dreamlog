@@ -12,7 +12,7 @@
       <%= link_to 'View Analysis', dream_analysis_path(@dream, @transcription.analyses.first), class: 'btn btn-success' %>
     <% else %>
       <!-- Si aucune analyse n'existe, bouton pour en créer une -->
-      <%= button_to 'Generate Analysis', generate_analysis_path(@dream), method: :post, class: 'btn btn-warning' %>
+      <%= button_to 'Generate Analysis', "/dreams/#{@dream.id}/analyses/generate", method: :post, class: 'btn btn-warning' %>
     <% end %>
 
     <%= link_to 'Edit Transcription', edit_dream_transcription_path(@dream), class: 'btn btn-primary' %>

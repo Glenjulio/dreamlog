@@ -1,6 +1,6 @@
 class DreamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_dream, only: [:show, :edit, :update, :destroy]
+  before_action :set_dream, only: [:show, :edit, :update, :destroy, :transcribe]
 
   def mydreams
     @dreams = current_user.dreams.order(created_at: :desc)
@@ -49,6 +49,30 @@ class DreamsController < ApplicationController
   def destroy
     @dream.destroy
     redirect_to mydreams_path, notice: "Dream deleted successfully"
+  end
+
+  def transcribe
+    unless @dream.audio.attached?
+      redirect_to mydreams_path, alert: "No audio file found for transcription"
+      return
+    end
+
+    if @dream.transcription.present?
+      redirect_to dream_transcription_path(@dream), notice: "Transcription already exists"
+      return
+    end
+
+    # Appel du service de transcription
+    service = TranscriptionService.new(dream: @dream)
+    result = service.transcribe
+
+    if result[:success]
+      redirect_to dream_transcription_path(@dream),
+                  notice: "Transcription completed successfully!"
+    else
+      redirect_to mydreams_path,
+                  alert: result[:message]
+    end
   end
 
   protect_from_forgery except: :upload_audio
