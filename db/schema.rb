@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema[7.1].define(version: 2025_07_20_163940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,11 +44,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_20_163940) do
   end
 
   create_table "analyses", force: :cascade do |t|
+=======
+ActiveRecord::Schema[7.1].define(version: 2025_07_18_160733) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "analyzes", force: :cascade do |t|
+>>>>>>> 20dd9d53200f2a6f491f495cc3d0a2cdd9253a0a
     t.bigint "transcription_id", null: false
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["transcription_id"], name: "index_analyses_on_transcription_id"
+    t.index ["transcription_id"], name: "index_analyzes_on_transcription_id"
   end
 
   create_table "dreams", force: :cascade do |t|
@@ -103,9 +111,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_20_163940) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+<<<<<<< HEAD
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "analyses", "transcriptions"
+=======
+  add_foreign_key "analyzes", "transcriptions"
+>>>>>>> 20dd9d53200f2a6f491f495cc3d0a2cdd9253a0a
   add_foreign_key "dreams", "users"
   add_foreign_key "personalities", "users"
   add_foreign_key "transcriptions", "dreams"
