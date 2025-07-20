@@ -5,9 +5,34 @@
   </div>
 
   <!-- Bouton Record : centré avec flex auto -->
-  <div class="d-flex flex-grow-1 justify-content-center align-items-center w-100">
-    <%= link_to new_dream_path, class: "btn text-white shadow-lg", style: "width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(45deg, #E175D3, #731F8A, #A87CDB); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; border: none;" do %>
-      Record
+  <!--<div class="d-flex flex-column flex-grow-1 justify-content-center align-items-center w-100 gap-3">-->
+  <div class="d-flex flex-column flex-grow-1 justify-content-center align-items-center w-100 gap-3">
+
+  <!-- Ceci est mon bouton Record qui va gérer les enregistrements.  Il est controllé par Stimulus-->
+    <div data-controller="recordings" class="d-flex flex-column align-items-center gap-3" >
+      <button
+        data-action="click->recordings#toggle"
+        data-recordings-target="button"
+        class="record-button btn text-white shadow-lg"
+      >
+        Record
+      </button>
+
+      <div data-recordings-target="actionButtons" class="d-flex gap-3 d-none">
+        <button data-action="click->recordings#save" data-recordings-target="save" class="btn btn-success px-4 py-2">Save</button>
+        <button data-action="click->recordings#delete" data-recordings-target="delete" class="btn btn-danger px-4 py-2">Delete</button>
+      </div>
+    </div>
+
+
+
+
+
+
+    <%= link_to new_dream_path,
+    class: "d-none btn text-white shadow-lg",
+    style: "width: 200; height: 200; border-radius: 50%; background: linear-gradient(45deg, #E175D3, #731F8A, #A87CDB); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: none;" do %>
+      Manual Transcription
     <% end %>
   </div>
 
