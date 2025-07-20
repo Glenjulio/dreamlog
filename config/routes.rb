@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
     resource :transcription, only: [:show, :edit, :update]
 
-    resources :analyses, only: [:show] do
+    resources :analyses, only: [:show, :create] do
       collection do
         post :generate, to: 'analyses#generate'
       end

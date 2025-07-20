@@ -7,7 +7,10 @@ class TranscriptionsController < ApplicationController
     unless @transcription
       redirect_to edit_dream_path(@dream),
                   notice: "No transcription found. Please add one or transcribe the audio."
+      return
     end
+    
+    @analysis = @transcription.analyses.first  # Récupération de l'analyse associée
   end
 
   def edit
