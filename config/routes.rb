@@ -20,8 +20,8 @@ Rails.application.routes.draw do
       patch :public
     end
 
-    # Transcription liée à un rêve
-    resource :transcription, only: [:create, :show, :edit, :update] do
+    # Transcription liée à un rêve (resource unique pour chaque rêve)
+    resource :transcription, only: [:show, :edit, :update] do
       # Analyses liées à une transcription
       resources :analyses, only: [:create, :show, :index]
     end

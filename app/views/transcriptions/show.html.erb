@@ -1,2 +1,22 @@
-<h1>Transcriptions#show</h1>
-<p>Find me in app/views/transcriptions/show.html.erb</p>
+<h1>Dream transcription</h1>
+
+<% if @transcription.present? %>
+  <div>
+    <h2><%= @dream.title %></h2>
+    <p><%= @transcription.content %></p>
+  </div>
+
+  <div>
+    <%= link_to 'Edit transcription', edit_dream_transcription_path(@dream), class: 'btn btn-primary' %>
+  </div>
+<% else %>
+  <p>No transcription found for the dream.</p>
+  <div>
+    <%= link_to 'Create transcription', edit_dream_transcription_path(@dream), class: 'btn btn-secondary' %>
+  </div>
+<% end %>
+
+<%= link_to 'Back to dream', edit_dream_path(@dream), class: 'btn btn-default' %>
+
+  <!-- Navbar -->
+  <%= render "shared/bottom_nav" %>
