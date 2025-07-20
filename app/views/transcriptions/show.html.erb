@@ -10,7 +10,7 @@
     <% if @transcription.analysis %>  <!-- Vérifier s'il y a une analyse associée -->
       <%= link_to 'View Analysis', dream_analysis_path(@dream, @transcription.analysis), class: 'btn btn-success' %>
     <% else %>
-      <%= button_to 'Generate Analysis', generate_analysis_dream_path(@dream), method: :post, class: 'btn btn-warning' %>
+      <%= button_to 'Generate Analysis', generate_dream_analyses_path(@dream), method: :post, class: 'btn btn-warning' %>
     <% end %>
 
     <%= link_to 'Edit Transcription', edit_dream_transcription_path(@dream), class: 'btn btn-primary' %>
