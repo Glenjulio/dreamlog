@@ -3,6 +3,7 @@ class TranscriptionsController < ApplicationController
 
   def show
     @transcription = @dream.transcription
+    @analysis = @transcription.analysis  # Récupération de l'analyse associée à la transcription
     # Si aucune transcription n'est trouvée, tu peux gérer l'erreur ici
     # redirect_to edit_dream_path(@dream), notice: "No transcription found"
   end
