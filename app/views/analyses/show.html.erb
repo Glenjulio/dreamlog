@@ -1,2 +1,18 @@
-<h1>Analyses#show</h1>
-<p>Find me in app/views/analyses/show.html.erb</p>
+<h1>Dream Analysis</h1>
+
+<h2><%= @dream.title %></h2>
+
+<% if @analysis.present? %>
+  <p><strong>Analysis:</strong></p>
+  <p><%= @analysis.content %></p>
+<% else %>
+  <p>No analysis found for this dream.</p>
+  <%= link_to 'Generate Analysis', generate_analysis_dream_transcription_path(@dream), method: :post, class: 'btn btn-warning' %>
+<% end %>
+
+<div>
+  <%= link_to 'Back to Transcription', dream_transcription_path(@dream), class: 'btn btn-secondary' %>
+</div>
+
+<!-- Navbar -->
+<%= render "shared/bottom_nav" %>

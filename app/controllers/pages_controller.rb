@@ -14,7 +14,7 @@ class PagesController < ApplicationController
   def transcription
   end
 
-  def analyze
+  def analyse
   end
 
   def past_recording

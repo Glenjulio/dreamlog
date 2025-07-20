@@ -1,4 +1,4 @@
-<h1>Dream transcription</h1>
+<h1>Transcription of your dream</h1>
 
 <% if @transcription.present? %>
   <div>
@@ -7,16 +7,14 @@
   </div>
 
   <div>
-    <%= link_to 'Edit transcription', edit_dream_transcription_path(@dream), class: 'btn btn-primary' %>
+    <!-- Lien vers la page d'analyse -->
+    <%= link_to 'Go to Analysis', dream_analyses_path(@dream), class: 'btn btn-success' %>
+
+    <%= link_to 'Edit Transcription', edit_dream_transcription_path(@dream), class: 'btn btn-primary' %>
   </div>
+
 <% else %>
-  <p>No transcription found for the dream.</p>
-  <div>
-    <%= link_to 'Create transcription', edit_dream_transcription_path(@dream), class: 'btn btn-secondary' %>
-  </div>
+  <p>No transcription found for this dream.</p>
 <% end %>
 
-<%= link_to 'Back to dream', edit_dream_path(@dream), class: 'btn btn-default' %>
-
-  <!-- Navbar -->
-  <%= render "shared/bottom_nav" %>
+<%= link_to 'Back to Dream', edit_dream_path(@dream), class: 'btn btn-default' %>
