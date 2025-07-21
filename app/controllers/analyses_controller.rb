@@ -7,20 +7,11 @@ class AnalysesController < ApplicationController
     redirect_to mydreams_path, alert: "Analysis not found" unless @analysis
   end
 
-  def create
-    # Créer une analyse indépendamment d'une transcription
-    @transcription = @dream.transcription
-    @analysis = Analysis.create!(content: "Generated analysis for dream #{@dream.title}")
-
-    # Redirection ou traitement après création
-    redirect_to dream_analysis_path(@dream, @analysis), notice: "Analysis created successfully!"
-  end
-
   def generate
     @transcription = @dream.transcription
 
-    # Si aucune transcription n'existe, on redirige
-    if @transcription.blank?
+    # Vérifications préalables
+    unless @transcription.present?
       redirect_to edit_dream_path(@dream),
                   alert: "Please add a transcription before generating an analysis."
       return
@@ -33,49 +24,42 @@ class AnalysesController < ApplicationController
       return
     end
 
-    # Créer une analyse pour cette transcription (has_one, pas has_many)
-    @analysis = @transcription.create_analysis!(
-      content: generate_analysis_content(@transcription.content)
-    )
+    # Générer l'analyse avec feedback utilisateur
+    begin
+      Rails.logger.info "🚀 Starting AI analysis generation for dream #{@dream.id}"
 
-    redirect_to dream_analysis_path(@dream, @analysis), notice: "Analysis generated successfully!"
-  rescue => e
-    redirect_to dream_transcription_path(@dream), alert: "Error generating analysis: #{e.message}"
+      analysis_content = generate_analysis_content
+
+      # Créer l'analyse en base
+      @analysis = @transcription.create_analysis!(content: analysis_content)
+
+      Rails.logger.info "✅ Analysis created successfully with ID #{@analysis.id}"
+
+      redirect_to dream_analysis_path(@dream, @analysis),
+                  notice: "Analysis generated successfully!"
+
+    rescue StandardError => e
+      Rails.logger.error "❌ Error in analysis generation: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+
+      redirect_to dream_transcription_path(@dream),
+                  alert: "Unable to generate analysis. Please try again later."
+    end
   end
 
   private
 
   def set_dream
     @dream = current_user.dreams.find(params[:dream_id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to mydreams_path, alert: "Dream not found"
   end
 
-  def generate_analysis_content(transcription_text)
-    # Génération d'analyse basique - peut être améliorée avec OpenAI plus tard
-    "Analyse automatique du rêve :\n\n" +
-    "Longueur de la transcription : #{transcription_text.length} caractères\n\n" +
-    "Éléments détectés :\n" +
-    "- Contenu émotionnel : #{detect_emotions(transcription_text)}\n" +
-    "- Thèmes principaux : #{detect_themes(transcription_text)}\n\n" +
-    "Cette analyse sera améliorée avec l'intégration d'IA."
-  end
-
-  def detect_emotions(text)
-    emotions = []
-    emotions << "fear" if text.downcase.match?(/fear|scared|terrified|nightmare/)
-    emotions << "joy" if text.downcase.match?(/happy|joy|content|laugh/)
-    emotions << "sadness" if text.downcase.match?(/sad|cry|melancholy/)
-    emotions << "anger" if text.downcase.match?(/angry|mad|furious/)
-
-    emotions.any? ? emotions.join(", ") : "neutral"
-  end
-
-  def detect_themes(text)
-    themes = []
-    themes << "family" if text.downcase.match?(/family|parent|mother|father|brother|sister/)
-    themes << "work" if text.downcase.match?(/work|office|colleague|boss/)
-    themes << "travel" if text.downcase.match?(/travel|car|plane|road/)
-    themes << "home" if text.downcase.match?(/home|room|kitchen|living/)
-
-    themes.any? ? themes.join(", ") : "daily life"
+  def generate_analysis_content
+    # Utiliser le service OpenAI avec la personnalité de l'utilisateur
+    OpenAiService.new(
+      transcription: @transcription,
+      personality: current_user.personality
+    ).call
   end
 end
