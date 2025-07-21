@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "Diamor";
+  src: url("Diamor.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(ellipse at center, #1a0033 0%, #0d001a 100%);
+  color: #fff;
+  font-family: 'Helvetica Neue', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 0;
+}
