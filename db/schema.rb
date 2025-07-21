@@ -59,6 +59,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_20_163940) do
     t.datetime "updated_at", null: false
     t.string "tags"
     t.boolean "private"
+    t.text "transcription"
     t.index ["created_at"], name: "index_dreams_on_created_at"
     t.index ["private"], name: "index_dreams_on_private"
     t.index ["user_id"], name: "index_dreams_on_user_id"

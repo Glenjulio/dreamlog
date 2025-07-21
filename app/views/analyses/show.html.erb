@@ -1,12 +1,13 @@
-<h1>Analysis for your dream</h1>
+<h1 class="mb-4">Analysis for your dream</h1>
 
 <% if @analysis.present? %>
-  <div>
-    <h2><%= @dream.title %></h2>
-    <p><%= @analysis.content %></p>
+  <div class="container px-3" style="white-space: pre-wrap; color: white;">
+    <h2 class="h5 mb-3"><%= @dream.title %></h2>
+    <%= @analysis.content %>
   </div>
 <% else %>
   <p>No analysis found for this dream.</p>
 <% end %>
 
-<%= link_to 'Back to Dream', dream_path(@dream), class: 'btn btn-default' %>
+<!-- Navbar -->
+<%= render "shared/bottom_nav" %>

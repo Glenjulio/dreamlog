@@ -50,13 +50,15 @@ class AnalysesController < ApplicationController
   end
 
   def generate_analysis_content(transcription_text)
-    # Génération d'analyse basique - peut être améliorée avec OpenAI plus tard
-    "Analyse automatique du rêve :\n\n" +
-    "Longueur de la transcription : #{transcription_text.length} caractères\n\n" +
-    "Éléments détectés :\n" +
-    "- Contenu émotionnel : #{detect_emotions(transcription_text)}\n" +
-    "- Thèmes principaux : #{detect_themes(transcription_text)}\n\n" +
-    "Cette analyse sera améliorée avec l'intégration d'IA."
+    personality = current_user.personality
+
+    OpenAiService.new(
+      transcription: @transcription,
+      personality: personality
+    ).call
+  rescue => e
+    Rails.logger.error("OpenAI error: #{e.message}")
+    "Une erreur est survenue lors de la génération de l'analyse par l'IA."
   end
 
   def detect_emotions(text)
