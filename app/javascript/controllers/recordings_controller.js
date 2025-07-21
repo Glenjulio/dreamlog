@@ -9,7 +9,7 @@ export default class extends Controller {
     this.recording = false
     this.mediaRecorder = null
     this.audioChunks = []
-    this.signedId = null // Store uploaded blob ID here
+    this.signedId = null
   }
 
   toggle() {
@@ -43,11 +43,9 @@ export default class extends Controller {
           this.audioBlob = new Blob(this.audioChunks, { type: "audio/webm" })
           const file = new File([this.audioBlob], "recording.webm", { type: "audio/webm" })
           this.uploadAudio(file)
-
         }
 
         this.buttonTarget.innerText = "Stop"
-
         this.mediaRecorder.start()
         console.log("🎙️ Recording started")
       })
@@ -73,73 +71,84 @@ export default class extends Controller {
         console.error("❌ Upload failed", error)
       } else {
         console.log("✅ Upload success", blob)
-        this.signedId = blob.signed_id // Store it for the Save click
-
-        // You can now attach blob.signed_id to a form
-        // Or send it to your backend in a fetch call if needed
+        this.signedId = blob.signed_id
       }
     })
   }
 
-   async save() {
-      if (!this.audioBlob) {
-        alert("No recording to save");
-        return;
-      }
+  async save() {
+    if (!this.audioBlob) {
+      alert("No recording to save")
+      return
+    }
 
-      const title = prompt("Enter a title for your dream:");
-      if (!title) {
-        alert("Dream not saved (title is required)");
-        return;
-      }
+    const title = prompt("Enter a title for your dream:")
+    if (!title) {
+      alert("Dream not saved (title is required)")
+      return
+    }
 
-      const file = new File([this.audioBlob], "recording.webm", {
-        type: "audio/webm"
-      });
+    const file = new File([this.audioBlob], "recording.webm", {
+      type: "audio/webm"
+    })
 
-      const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads");
+    const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
 
-      upload.create((error, blob) => {
-        if (error) {
-          console.error("❌ Upload failed", error);
-        } else {
-          console.log("✅ Upload success", blob);
+    upload.create((error, blob) => {
+      if (error) {
+        console.error("❌ Upload failed", error)
+        alert("Upload failed")
+      } else {
+        console.log("✅ Upload success", blob)
 
-          fetch("/dreams", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-Token": this.getMetaValue("csrf-token"),
-            },
-            body: JSON.stringify({
-              dream: {
-                title: title,
-                tags: "voice",
-                private: false,
-                audio: blob.signed_id,
-                transcription_attributes: {
-                  content: "Voice recorded dream"
-                }
-              }
-            })
-          })
+        const formData = new FormData()
+        formData.append("dream[title]", title)
+        formData.append("dream[tags]", "voice")
+        formData.append("dream[private]", false)
+        formData.append("dream[audio]", blob.signed_id)
+        // formData.append("dream[transcription_attributes][content]", "Voice recorded dream")
+
+        console.log("📤 Sending formData to /dreams...")
+
+        fetch("/dreams", {
+          method: "POST",
+          headers: {
+            "X-CSRF-Token": this.getMetaValue("csrf-token"),
+            "Accept": "application/json" // ✅ important
+          },
+          body: formData
+        })
           .then(response => {
-            if (response.ok) {
-              console.log("🎉 Dream saved!");
-              window.location.href = "/mydreams"; // or wherever you'd like to redirect
+            console.log("📦 Raw response from /dreams:", response)
+            return response.json()
+          })
+          .then(data => {
+            console.log("📨 JSON response from /dreams:", data)
+
+            if (data.success && data.id) {
+              console.log(`🚀 Launching transcription for dream #${data.id}`)
+
+              return fetch(`/dreams/${data.id}/transcribe`, {
+                method: "POST",
+                headers: {
+                  "X-CSRF-Token": this.getMetaValue("csrf-token")
+                }
+              }).then(() => {
+                console.log(`✅ Redirecting to /dreams/${data.id}/transcription`)
+                window.location.href = `/dreams/${data.id}/transcription`
+              })
             } else {
-              console.error("❌ Failed to save dream", response.statusText);
-              alert("Dream could not be saved");
+              console.error("❌ Failed to save dream (data returned, but not valid):", data)
+              alert("Dream could not be saved: " + (data.errors?.join(", ") || "Unknown error"))
             }
           })
           .catch(error => {
-            console.error("❌ Server error", error);
-            alert("Error saving dream");
-          });
-        }
-      });
-}
-
+            console.error("❌ Server error when creating dream:", error)
+            alert("Error saving dream (see console for details)")
+          })
+      }
+    })
+  }
 
   getMetaValue(name) {
     const element = document.head.querySelector(`meta[name="${name}"]`)
