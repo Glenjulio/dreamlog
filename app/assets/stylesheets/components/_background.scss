@@ -1,0 +1,14 @@
+/* Halo lumineux central */
+body::after {
+  content: "";
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(201, 89, 255, 0.25), transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
