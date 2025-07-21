@@ -1,5 +1,4 @@
-<!-- app/views/transcriptions/edit.html.erb -->
-<h1>Edit Transcription</h1>
+<h1 class="mb-4">Edit Transcription</h1>
 
 <div class="container">
   <h2><%= @dream.title %></h2>
@@ -54,15 +53,10 @@
           hint: "How intense or memorable was this dream? (1-10)" %>
     </div>
 
-    <div class="form-actions d-flex gap-3">
-      <%= f.button :submit, "Update Transcription",
-          class: "btn btn-primary" %>
-
-      <%= link_to "Cancel", dream_transcription_path(@dream),
-          class: "btn btn-secondary" %>
-
-      <%= link_to "Back to Dreams", mydreams_path,
-          class: "btn btn-outline-secondary" %>
+    <div class="form-actions d-flex flex-wrap gap-3 mt-4">
+      <%= link_to "Back to Dreams", mydreams_path, class: "gradient-button" %>
+      <%= link_to "Cancel", dream_transcription_path(@dream), class: "gradient-button" %>
+      <%= f.button :submit, "Update Transcription", class: "gradient-button" %>
     </div>
   <% end %>
 </div>

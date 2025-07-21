@@ -1,4 +1,4 @@
-<h1>Edit your dream</h1>
+<h1 class="mb-4">Edit your dream</h1>
 
 <%= form_with model: @dream, local: true do |form| %>
   <div>
@@ -23,13 +23,9 @@
     <% end %>
   </div>
 
-  <!-- Ajout du bouton pour accéder à la transcription -->
-  <div>
-    <%= link_to 'View/edit transcription', dream_transcription_path(@dream), class: 'btn btn-primary' %>
-  </div>
-
-  <div>
-    <%= form.submit "Save Changes", class: "btn btn-success" %>
+  <div class="d-flex gap-3 mt-4">
+    <%= link_to "View/Edit Transcription", dream_transcription_path(@dream), class: "gradient-button" %>
+    <%= form.submit "Save Changes", class: "gradient-button" %>
   </div>
 <% end %>
 

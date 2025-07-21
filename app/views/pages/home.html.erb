@@ -18,10 +18,26 @@
         Record
       </button>
 
-      <div data-recordings-target="actionButtons" class="d-flex gap-3 d-none">
-        <button data-action="click->recordings#save" data-recordings-target="save" class="btn btn-success px-4 py-2">Save</button>
-        <button data-action="click->recordings#delete" data-recordings-target="delete" class="btn btn-danger px-4 py-2">Delete</button>
+      <div class="mt-5">
+        <div data-recordings-target="actionButtons" class="d-flex gap-3 d-none">
+          <button
+            data-action="click->recordings#delete"
+            data-recordings-target="delete"
+            class="gradient-button"
+          >
+            Delete
+          </button>
+
+          <button
+            data-action="click->recordings#save"
+            data-recordings-target="save"
+            class="gradient-button"
+          >
+            Save
+          </button>
+        </div>
       </div>
+
     </div>
 
 
