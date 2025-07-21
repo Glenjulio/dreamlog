@@ -1,75 +1,9 @@
+@import "components/base";
+@import "components/background";
+@import "components/grid";
+@import "components/typography";
+@import "components/dreamlog_title";
 @import "components/record_button";
-
-@font-face {
-  font-family: "Diamor";
-  src: url("Diamor.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: radial-gradient(ellipse at center, #1a0033 0%, #0d001a 100%);
-  color: #fff;
-  font-family: 'Helvetica Neue', sans-serif;
-  overflow-x: hidden;
-  position: relative;
-  z-index: 0;
-}
-
-h1, h2 {
-  text-align: center;
-}
-
-/* Formulaires : espacement entre label et champ */
-label.string,
-label.optional,
-label.required {
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-/* Espacement entre chaque champ */
-input,
-textarea,
-select {
-  margin-bottom: 1.5rem;
-}
-
-/* Grille en overlay */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Halo lumineux central */
-body::after {
-  content: "";
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -30%);
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(201, 89, 255, 0.25), transparent 70%);
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Titre DreamLog personnalisé */
-.dreamlog-title {
-  font-family: "Diamor", 'Helvetica Neue', sans-serif;
-  font-size: 6rem;
-  line-height: 1.1;
-}
+@import "components/gradient_button";
+@import "components/bottom_nav";
+@import "components/form";
