@@ -1,5 +1,5 @@
 class DreamsController < ApplicationController
-  before_action :authenticate_user!
+  #before_action :authenticate_user!
   before_action :set_dream, only: [:show, :edit, :update, :destroy, :transcribe]
 
   def mydreams
@@ -21,12 +21,18 @@ class DreamsController < ApplicationController
     if @dream.save
       respond_to do |format|
         format.html { redirect_to mydreams_path, notice: "Rêve créé avec succès" }
-        format.json { render json: { success: true, id: @dream.id }, status: :created }
+        format.json {
+          render json: {
+            success: true,
+            id: @dream.id,
+            message: "Rêve sauvegardé avec succès !"
+          }, status: :created
+        }
       end
     else
       respond_to do |format|
         format.html { render :new }
-        format.json { render json: { errors: @dream.errors.full_messages }, status: :unprocessable_entity }
+        format.json { render json: { success: false, errors: @dream.errors.full_messages }, status: :unprocessable_entity }
       end
     end
   end
@@ -42,7 +48,7 @@ class DreamsController < ApplicationController
     if @dream.update(dream_params)
       redirect_to mydreams_path, notice: "Dream updated successfully"
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 

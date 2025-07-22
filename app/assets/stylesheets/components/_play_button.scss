@@ -1,0 +1,30 @@
+.play-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #4834d4, #686de0);
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+
+  &:hover:not(.disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(116, 52, 212, 0.4);
+    color: white;
+  }
+
+  // État désactivé pendant enregistrement
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: linear-gradient(45deg, #6c757d, #495057);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(116, 52, 212, 0.3);
+    color: white;
+  }
+}
