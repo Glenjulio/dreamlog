@@ -78,10 +78,19 @@ class DreamsController < ApplicationController
   protect_from_forgery except: :upload_audio
 
   def upload_audio
-    dream = current_user.dreams.create!
+    title = params[:title].presence || "Untitled voice dream #{Time.current.strftime('%Y-%m-%d %H:%M:%S')}"
+
+    dream = current_user.dreams.create!(
+      title: title,
+      private: true
+    )
+
     dream.audio.attach(params[:audio])
 
     render json: { success: true, id: dream.id }, status: :ok
+
+  rescue => e
+    render json: { success: false, error: e.message }, status: :unprocessable_entity
   end
 
   private

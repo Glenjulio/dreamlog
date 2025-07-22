@@ -71,7 +71,9 @@ class OpenAiService
 
       Format de réponse :
       - Structure claire avec sections (Symboles, Émotions, Interprétation, Conseils)
+      - Utilise uniquement du texte brut. Ne formate pas avec Markdown (pas de **gras**, *italique*, ni de listes `-` ou `*`, ni de `###`)
       - Ton bienveillant et professionnel
+      - Vouvoie la personne
       - Éviter les affirmations absolues, utiliser "peut suggérer", "pourrait indiquer"
       - Maximum 1200 mots
     PROMPT
