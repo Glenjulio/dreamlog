@@ -24,8 +24,8 @@ export default class extends Controller {
   startRecording() {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
-        this.mediaRecorder = new MediaRecorder(stream)
         this.audioChunks = []
+        this.mediaRecorder = new MediaRecorder(stream)
 
         this.mediaRecorder.ondataavailable = event => {
           if (event.data.size > 0) {
@@ -38,12 +38,20 @@ export default class extends Controller {
           this.actionButtonsTarget.classList.remove("d-none")
         }
 
-        this.mediaRecorder.start()
         this.buttonTarget.textContent = "Stop"
+        this.mediaRecorder.start()
+        console.log("Recording started")
       })
       .catch(error => {
         console.error("Microphone access error:", error)
-        alert("Microphone access is required.")
+        this.recording = false
+        this.buttonTarget.textContent = "Record"
+
+        if (error.name === "NotAllowedError") {
+          alert("Accès microphone refusé. Veuillez autoriser l'accès dans les paramètres de votre navigateur.")
+        } else {
+          alert("impossible d'accéder au microphone. Veuillez vérifier les paramètres de votre navigateur.")
+        }
       })
   }
 
@@ -54,57 +62,71 @@ export default class extends Controller {
     }
   }
 
+  save() {
+    if (!this.audioBlob) {
+      alert("Enregistrer un rêve avant de le sauvegarder.");
+      return;
+    }
+
+    const title = prompt("entrer un titre pour le rêve:");
+    if (!title) {
+      alert("Vous devez entrer un titre pour le rêve.")
+      return
+    }
+
+    const file = new File([this.audioBlob], "recording.webm", {
+      type: "audio/webm"
+    });
+
+    const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
+
+    upload.create((error, blob) => {
+      if (error) {
+        console.error("Direct upload failed:", error)
+      } else {
+        console.log("Direct upload successful:", blob)
+
+        fetch("/dreams", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": this.getMetaValue("csrf-token")
+          },
+          body: JSON.stringify({
+            dream: {
+              title: title,
+              tags: "voice",
+              private: false,
+              audio: blob.signed_id
+            }
+          })
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log("dream saved successfully");
+            window.location.href = "/mydreams";
+          } else {
+            console.error("Failed to save dream:", response.statusText);
+            alert("Le rêve n'a pas pu être sauvegardé. Veuillez réessayer.")
+          }
+        })
+        .catch(error => {
+          console.error("Error during save + transcription:", error)
+          alert("An error occurred.")
+        });
+      }
+    });
+  }
+
+  getMetaValue(name) {
+    const element = document.head.querySelector(`meta[name="${name}"]`)
+    return element?.getAttribute("content")
+  }
+
   delete() {
     this.audioBlob = null
     this.actionButtonsTarget.classList.add("d-none")
     this.buttonTarget.textContent = "Record"
-  }
-
-  save() {
-    if (!this.audioBlob) {
-      alert("No audio recorded.")
-      return
-    }
-
-    const title = prompt("Enter a title for your dream:")
-    if (!title) {
-      alert("You must enter a title.")
-      return
-    }
-
-    const formData = new FormData()
-    formData.append("audio", this.audioBlob, "recording.webm")
-    formData.append("title", title)
-
-    fetch("/dreams/upload_audio", {
-      method: "POST",
-      headers: {
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
-      },
-      body: formData
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          const dreamId = data.id
-
-          return fetch(`/dreams/${dreamId}/transcribe`, {
-            method: "POST",
-            headers: {
-              "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
-            }
-          })
-            .then(resp => {
-              if (!resp.ok) throw new Error("Transcription failed")
-              window.location.href = `/dreams/${dreamId}/transcription`
-            })
-        } else {
-          alert("Upload failed: " + data.error)
-        }
-      })
-      .catch(error => {
-        console.error("Error during save + transcription:", error)
-        alert("An error occurred.")
-      })
+    alert("Enregistrement supprimé.")
   }
 }
