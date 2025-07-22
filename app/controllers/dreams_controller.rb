@@ -1,5 +1,5 @@
 class DreamsController < ApplicationController
-  #before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_dream, only: [:show, :edit, :update, :destroy, :transcribe]
 
   def mydreams
