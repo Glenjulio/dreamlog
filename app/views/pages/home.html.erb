@@ -11,7 +11,9 @@
     <div data-controller="recordings" class="d-flex flex-column align-items-center gap-3">
 
     <!-- Affichage chrono -->
+    <div style="height: 24px">
       <span data-recordings-target="timer" class="d-none">00:00</span>
+    </div>
 
       <!-- Bouton principal d'enregistrement -->
       <button
@@ -23,28 +25,30 @@
         <i class="fa-solid fa-microphone-lines fa-2x"></i>
       </button>
 
-
-
       <!-- Bouton Play (caché par défaut) -->
-      <button
-        data-action="click->recordings#togglePlayback"
-        data-recordings-target="playButton"
-        class="play-button btn d-none"
-        title="Listen to recording"
-      >
-        <i class="fas fa-play"></i>
-      </button>
+      <div style="height: 56px;">
+        <button
+          data-action="click->recordings#togglePlayback"
+          data-recordings-target="playButton"
+          class="play-button btn d-none"
+          title="Listen to recording"
+        >
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
 
       <!-- Boutons de décision (cachés par défaut) -->
-      <div data-recordings-target="decisionButtons" class="d-flex gap-3 d-none">
-        <button
-          data-action="click->recordings#discardRecording"
-          class="gradient-button btn-outline d-flex justify-content-center align-items-center"
-          style="width: 48px; height: 48px;"
-          title="Delete"
-        >
-          <i class="fas fa-trash"></i>
-        </button>
+      <div style="height: 56px;">
+        <div data-recordings-target="decisionButtons" class="d-flex gap-3 d-none">
+          <button
+            data-action="click->recordings#discardRecording"
+            class="gradient-button btn-outline d-flex justify-content-center align-items-center"
+            style="width: 48px; height: 48px;"
+            title="Delete"
+          >
+            <i class="fas fa-trash"></i>
+          </button>
+
 
         <button
           data-action="click->recordings#saveAndTranscribe"
@@ -55,7 +59,7 @@
           <i class="fas fa-save"></i>
         </button>
       </div>
-
+    </div>
 
     </div> <!-- Fin du data-controller="recordings" -->
 
