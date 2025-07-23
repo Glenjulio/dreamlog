@@ -205,6 +205,7 @@ export default class extends Controller {
           const dreamId = data.id
           this.showCustomNotification("Dream saved, transcribing...", "info")
 
+          // Redirection to transcription page immediately after dream creation and transcription
           fetch(`/dreams/${dreamId}/transcribe`, {
             method: "POST",
             headers: {
