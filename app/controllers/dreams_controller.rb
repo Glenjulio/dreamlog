@@ -20,12 +20,12 @@ class DreamsController < ApplicationController
 
     if @dream.save
       respond_to do |format|
-        format.html { redirect_to mydreams_path, notice: "Rêve créé avec succès" }
+        format.html { redirect_to mydreams_path, notice: "Dream created successfully!" }
         format.json {
           render json: {
             success: true,
             id: @dream.id,
-            message: "Rêve sauvegardé avec succès !"
+            message: "Dream saved successfully!",
           }, status: :created
         }
       end

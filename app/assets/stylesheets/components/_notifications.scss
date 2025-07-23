@@ -1,0 +1,149 @@
+// app/assets/stylesheets/components/_notifications.scss
+
+.notifications-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  width: 400px;
+  max-width: calc(100vw - 40px);
+  pointer-events: none;
+}
+
+.notification {
+  background: rgba(26, 0, 51, 0.95);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  &.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  &.hide {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 12px;
+}
+
+.notification-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+.notification-message {
+  flex: 1;
+  color: white;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.notification-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+}
+
+// Type-specific styles
+.notification-success {
+  border-left: 4px solid #10b981;
+
+  .notification-icon {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+  }
+}
+
+.notification-error {
+  border-left: 4px solid #ef4444;
+
+  .notification-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+}
+
+.notification-warning {
+  border-left: 4px solid #f59e0b;
+
+  .notification-icon {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+  }
+}
+
+.notification-info {
+  border-left: 4px solid #3b82f6;
+
+  .notification-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .notifications-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-width: none;
+  }
+
+  .notification {
+    transform: translateY(-100px);
+
+    &.show {
+      transform: translateY(0);
+    }
+
+    &.hide {
+      transform: translateY(-100px);
+    }
+  }
+
+  .notification-content {
+    padding: 14px 16px;
+  }
+
+  .notification-message {
+    font-size: 13px;
+  }
+}
