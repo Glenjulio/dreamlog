@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 
 export default class extends Controller {
-  static targets = ["button", "playButton", "decisionButtons"]
+  static targets = ["button", "playButton", "decisionButtons", "timer"]
 
   connect() {
     this.recording = false
@@ -12,6 +12,8 @@ export default class extends Controller {
     this.audioUrl = null
     this.audioElement = null
     this.isPlaying = false
+    this.timerInterval = null
+    this.elapsedSeconds = 0
   }
 
   toggle() {
@@ -22,6 +24,27 @@ export default class extends Controller {
     } else {
       this.stopRecording()
     }
+  }
+
+  // fonctions chrono
+  startTimer() {
+    this.elapsedSeconds = 0
+    this.updateTimerDisplay()
+    this.timerInterval = setInterval(() => {
+      this.elapsedSeconds += 1
+      this.updateTimerDisplay()
+    }, 1000)
+  }
+
+  stopTimer() {
+    clearInterval(this.timerInterval)
+    this.timerInterval = null
+  }
+
+  updateTimerDisplay() {
+    const minutes = String(Math.floor(this.elapsedSeconds / 60)).padStart(2, "0")
+    const seconds = String(this.elapsedSeconds % 60).padStart(2, "0")
+    this.timerTarget.textContent = `${minutes}:${seconds}`
   }
 
   startRecording() {
@@ -46,10 +69,16 @@ export default class extends Controller {
           // ACTIVER le bouton Play ET montrer les boutons de décision
           this.enablePlayButton()
           this.showDecisionButtons()
+          this.stopTimer()
+          console.log("Timer stopped after recording")
         }
 
         this.buttonTarget.innerHTML = '<i class="fa-solid fa-stop fa-2x"></i>'
         this.mediaRecorder.start()
+        this.startTimer()
+        if (this.hasTimerTarget) {
+          this.timerTarget.classList.remove("d-none")
+        }
         console.log("Recording started")
       })
       .catch(error => {
@@ -227,6 +256,8 @@ saveAndTranscribe() {
     this.audioUrl = null
     this.audioElement = null
     this.isPlaying = false
+    this.updateTimerDisplay()
+
 
     // Cacher tous les boutons
     this.hideAllButtons()

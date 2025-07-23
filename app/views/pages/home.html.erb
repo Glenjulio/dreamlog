@@ -10,6 +10,9 @@
     <!-- Contrôleur Stimulus pour les enregistrements -->
     <div data-controller="recordings" class="d-flex flex-column align-items-center gap-3">
 
+    <!-- Affichage chrono -->
+      <span data-recordings-target="timer" class="d-none">00:00</span>
+
       <!-- Bouton principal d'enregistrement -->
       <button
         data-action="click->recordings#toggle"
@@ -19,6 +22,8 @@
       >
         <i class="fa-solid fa-microphone-lines fa-2x"></i>
       </button>
+
+
 
       <!-- Bouton Play (caché par défaut) -->
       <button
