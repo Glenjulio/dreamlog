@@ -48,7 +48,7 @@ export default class extends Controller {
           this.showDecisionButtons()
         }
 
-        this.buttonTarget.textContent = "Stop"
+        this.buttonTarget.innerHTML = '<i class="fa-solid fa-stop fa-2x"></i>'
         this.mediaRecorder.start()
         console.log("Recording started")
       })
@@ -64,7 +64,7 @@ export default class extends Controller {
   stopRecording() {
     if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
       this.mediaRecorder.stop()
-      this.buttonTarget.textContent = "Record"
+      this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
     }
   }
 
@@ -84,14 +84,14 @@ export default class extends Controller {
     this.playButtonTarget.disabled = true
     this.playButtonTarget.classList.add("disabled")
     this.playButtonTarget.innerHTML = '<i class="fas fa-play"></i>'
-    this.playButtonTarget.title = "Enregistrement en cours..."
+    this.playButtonTarget.title = "<<<<Recording in progress>>>>"
   }
 
   // Activer le bouton Play (après enregistrement)
   enablePlayButton() {
     this.playButtonTarget.disabled = false
     this.playButtonTarget.classList.remove("disabled")
-    this.playButtonTarget.title = "Écouter l'enregistrement"
+    this.playButtonTarget.title = "Listen to recording"
     this.updatePlayButton()
   }
 
@@ -130,16 +130,16 @@ export default class extends Controller {
 
   // FONCTION DIRECTE : Sauvegarder (appelée par le bouton)
 saveAndTranscribe() {
-  const title = prompt("Donnez un titre à votre rêve :")
+  const title = prompt("Give a title to your dream")
   if (!title?.trim()) {
-    alert("Un titre est requis pour sauvegarder le rêve.")
+    alert("A title is required to save your dream")
     return
   }
 
   console.log("Starting save process...")
 
   // Afficher état de chargement
-  this.showLoadingState("Sauvegarde en cours...")
+  this.showLoadingState("Saving in progress...")
 
   const file = new File([this.audioBlob], "recording.webm", {
     type: "audio/webm"
@@ -153,7 +153,7 @@ saveAndTranscribe() {
     if (error) {
       console.error("Direct upload failed:", error)
       this.hideLoadingState()
-      alert("Erreur lors du téléchargement. Veuillez réessayer.")
+      alert("Error during uploading. Try again.")
       return
     }
 
@@ -198,16 +198,16 @@ saveAndTranscribe() {
       this.hideLoadingState()
 
       if (data.success) {
-        alert("Rêve sauvegardé avec succès !")
+        alert("Dream saved")
         window.location.href = "/mydreams"
       } else {
-        throw new Error(data.errors?.join(", ") || "Erreur inconnue")
+        throw new Error(data.errors?.join(", ") || "Unknown error")
       }
     })
     .catch(error => {
       console.error("Error during save:", error)
       this.hideLoadingState()
-      alert(`Erreur lors de la sauvegarde: ${error.message}`)
+      alert(`Error while saving: ${error.message}`)
     })
   })
 }
@@ -215,7 +215,7 @@ saveAndTranscribe() {
   // FONCTION DIRECTE : Supprimer (appelée par le bouton)
   discardRecording() {
     this.cleanupRecording()
-    alert("Enregistrement supprimé.")
+    alert("Recordind deleted")
   }
 
   cleanupRecording() {
@@ -262,12 +262,12 @@ saveAndTranscribe() {
   }
 
   showErrorMessage(error) {
-    let message = "Une erreur s'est produite."
+    let message = "An error occured"
 
     if (error.name === "NotAllowedError") {
-      message = "Accès au microphone refusé. Veuillez autoriser l'accès dans votre navigateur."
+      message = "Microphone access refused. Please, allow it in your browser"
     } else if (error.name === "NotFoundError") {
-      message = "Aucun microphone détecté sur votre appareil."
+      message = "No microphone found on your device"
     }
 
     alert(message)
