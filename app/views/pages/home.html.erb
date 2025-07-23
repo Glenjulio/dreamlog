@@ -15,8 +15,9 @@
         data-action="click->recordings#toggle"
         data-recordings-target="button"
         class="record-button btn text-white shadow-lg"
+        title="Start recording"
       >
-        Record
+        <i class="fa-solid fa-microphone-lines fa-2x"></i>
       </button>
 
       <!-- Bouton Play (caché par défaut) -->
@@ -24,7 +25,7 @@
         data-action="click->recordings#togglePlayback"
         data-recordings-target="playButton"
         class="play-button btn d-none"
-        title="Écouter l'enregistrement"
+        title="Listen to recording"
       >
         <i class="fas fa-play"></i>
       </button>
@@ -33,18 +34,23 @@
       <div data-recordings-target="decisionButtons" class="d-flex gap-3 d-none">
         <button
           data-action="click->recordings#discardRecording"
-          class="gradient-button btn-outline"
+          class="gradient-button btn-outline d-flex justify-content-center align-items-center"
+          style="width: 48px; height: 48px;"
+          title="Delete"
         >
-          <i class="fas fa-trash me-2"></i>Supprimer
+          <i class="fas fa-trash"></i>
         </button>
 
         <button
           data-action="click->recordings#saveAndTranscribe"
-          class="gradient-button"
+          class="gradient-button d-flex justify-content-center align-items-center"
+          style="width: 48px; height: 48px;"
+          title="Save"
         >
-          <i class="fas fa-save me-2"></i>Sauvegarder
+          <i class="fas fa-save"></i>
         </button>
       </div>
+
 
     </div> <!-- Fin du data-controller="recordings" -->
 

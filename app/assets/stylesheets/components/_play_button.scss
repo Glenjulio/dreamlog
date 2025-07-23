@@ -2,20 +2,28 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #4834d4, #686de0);
+  background: linear-gradient(
+    45deg,
+    #E175D3 0%,    // rose vif
+    #9B3BBF 50%,   // violet moyen et lumineux
+    #A87CDB 100%   // lavande douce
+  );
   border: none;
   color: white;
   font-size: 1.2rem;
   transition: all 0.3s ease;
   margin-bottom: 1rem;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &:hover:not(.disabled) {
     transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(116, 52, 212, 0.4);
+    box-shadow: 0 0 25px rgba(225, 117, 211, 0.4); // ajusté au nouveau dégradé
     color: white;
   }
 
-  // État désactivé pendant enregistrement
   &.disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -24,7 +32,7 @@
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(116, 52, 212, 0.3);
+    box-shadow: 0 0 0 3px rgba(225, 117, 211, 0.3); // ajusté aussi
     color: white;
   }
 }
