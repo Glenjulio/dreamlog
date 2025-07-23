@@ -16,8 +16,16 @@
   </head>
 
   <body class="text-white d-flex flex-column min-vh-100">
+    <!-- Notifications Container -->
+    <%= notification_container %>
+
+    <!-- Flash Messages as JSON for JavaScript processing -->
+    <%= render_flash_notifications %>
+
     <main class="w-100 flex-grow-1 d-flex flex-column justify-content-center align-items-center py-4" style="z-index: 1; position: relative;">
       <%= yield %>
     </main>
+
+    <!-- Include flash notifications handler -->
   </body>
 </html>
