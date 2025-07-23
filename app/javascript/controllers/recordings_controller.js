@@ -113,7 +113,7 @@ export default class extends Controller {
     this.playButtonTarget.disabled = true
     this.playButtonTarget.classList.add("disabled")
     this.playButtonTarget.innerHTML = '<i class="fas fa-play"></i>'
-    this.playButtonTarget.title = "<<<<Recording in progress>>>>"
+    this.playButtonTarget.title = "Recording in progress..."
   }
 
   // Activer le bouton Play (après enregistrement)
@@ -158,93 +158,94 @@ export default class extends Controller {
   }
 
   // FONCTION DIRECTE : Sauvegarder (appelée par le bouton)
-saveAndTranscribe() {
-  const title = prompt("Give a title to your dream")
-  if (!title?.trim()) {
-    alert("A title is required to save your dream")
-    return
-  }
-
-  console.log("Starting save process...")
-
-  // Afficher état de chargement
-  this.showLoadingState("Saving in progress...")
-
-  const file = new File([this.audioBlob], "recording.webm", {
-    type: "audio/webm"
-  })
-
-  console.log("File created:", file)
-
-  const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
-
-  upload.create((error, blob) => {
-    if (error) {
-      console.error("Direct upload failed:", error)
-      this.hideLoadingState()
-      alert("Error during uploading. Try again.")
+  saveAndTranscribe() {
+    const title = "Dream " + new Date().toLocaleString()
+    if (!title?.trim()) {
+      this.showCustomNotification("A title is required to save your dream!", "warning")
       return
     }
 
-    console.log("Direct upload successful:", blob)
-    console.log("Now creating dream...")
+    console.log("Starting save process...")
 
-    // DÉFINIR dreamData D'ABORD
-    const dreamData = {
-      dream: {
-        title: title,
-        tags: "voice_recording",
-        private: false,
-        audio: blob.signed_id
-        // Removed: auto_transcribe: true
-      }
-    }
+    // Afficher état de chargement
+    this.showLoadingState("Saving in progress...")
 
-    console.log("Sending dream data:", dreamData)
-
-    // PUIS faire le fetch avec .json
-    fetch("/dreams.json", {  // ← .json ajouté
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "X-CSRF-Token": this.getMetaValue("csrf-token")
-      },
-      body: JSON.stringify(dreamData)
+    const file = new File([this.audioBlob], "recording.webm", {
+      type: "audio/webm"
     })
-    .then(response => {
-      console.log("Response status:", response.status)
-      console.log("Response headers:", response.headers)
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    console.log("File created:", file)
+
+    const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
+
+    upload.create((error, blob) => {
+      if (error) {
+        console.error("Direct upload failed:", error)
+        this.hideLoadingState()
+        this.showCustomNotification("Error during uploading. Try again.", "error")
+        return
       }
 
-      return response.json()
-    })
-    .then(data => {
-      console.log("Dream created successfully:", data)
-      this.hideLoadingState()
+      console.log("Direct upload successful:", blob)
+      console.log("Now creating dream...")
 
-      if (data.success) {
-        alert("Dream saved")
-        window.location.href = "/mydreams"
-      } else {
-        throw new Error(data.errors?.join(", ") || "Unknown error")
+      // DÉFINIR dreamData D'ABORD
+      const dreamData = {
+        dream: {
+          title: title,
+          tags: "voice_recording",
+          private: false,
+          audio: blob.signed_id
+        }
       }
+
+      console.log("Sending dream data:", dreamData)
+
+      // PUIS faire le fetch avec .json
+      fetch("/dreams.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-CSRF-Token": this.getMetaValue("csrf-token")
+        },
+        body: JSON.stringify(dreamData)
+      })
+      .then(response => {
+        console.log("Response status:", response.status)
+        console.log("Response headers:", response.headers)
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
+
+        return response.json()
+      })
+      .then(data => {
+        console.log("Dream created successfully:", data)
+        this.hideLoadingState()
+
+        if (data.success) {
+          this.showCustomNotification("Dream saved successfully!", "success")
+          setTimeout(() => {
+            window.location.href = "/mydreams"
+          }, 1000)
+        } else {
+          throw new Error(data.errors?.join(", ") || "Unknown error")
+        }
+      })
+      .catch(error => {
+        console.error("Error during save:", error)
+        this.hideLoadingState()
+        this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
+      })
     })
-    .catch(error => {
-      console.error("Error during save:", error)
-      this.hideLoadingState()
-      alert(`Error while saving: ${error.message}`)
-    })
-  })
-}
+  }
 
   // FONCTION DIRECTE : Supprimer (appelée par le bouton)
   discardRecording() {
     this.cleanupRecording()
-    alert("Recordind deleted")
+    this.showCustomNotification("Recording deleted!", "info")
   }
 
   cleanupRecording() {
@@ -258,10 +259,9 @@ saveAndTranscribe() {
     this.isPlaying = false
     this.updateTimerDisplay()
 
-
     // Cacher tous les boutons
     this.hideAllButtons()
-    this.buttonTarget.textContent = "Record"
+    this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
   }
 
   showLoadingState(message) {
@@ -269,7 +269,7 @@ saveAndTranscribe() {
     loader.className = 'loading-overlay'
     loader.innerHTML = `
       <div class="spinner-border text-light" role="status">
-        <span class="visually-hidden">Chargement...</span>
+        <span class="visually-hidden">Loading...</span>
       </div>
       <p class="mt-3 text-white">${message}</p>
     `
@@ -293,15 +293,62 @@ saveAndTranscribe() {
   }
 
   showErrorMessage(error) {
-    let message = "An error occured"
+    let message = "An error occurred"
 
     if (error.name === "NotAllowedError") {
-      message = "Microphone access refused. Please, allow it in your browser"
+      message = "Microphone access refused. Please allow it in your browser"
     } else if (error.name === "NotFoundError") {
       message = "No microphone found on your device"
     }
 
-    alert(message)
+    this.showCustomNotification(message, "error")
+  }
+
+  showCustomNotification(message, type) {
+    // Créer la notification directement dans le DOM
+    const container = document.querySelector('[data-notifications-target="container"]')
+    if (!container) return
+
+    const notification = document.createElement('div')
+    notification.className = `notification notification-${type}`
+
+    const icon = this.getNotificationIcon(type)
+
+    notification.innerHTML = `
+      <div class="notification-content">
+        <div class="notification-icon">
+          <i class="fas ${icon}"></i>
+        </div>
+        <div class="notification-message">
+          ${message}
+        </div>
+        <button class="notification-close" onclick="this.parentNode.parentNode.remove()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    `
+
+    container.appendChild(notification)
+
+    // Animation d'entrée
+    setTimeout(() => notification.classList.add('show'), 10)
+
+    // Auto-remove après 5 secondes
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove()
+      }
+    }, 5000)
+  }
+
+  getNotificationIcon(type) {
+    switch(type) {
+      case 'success': return 'fa-check-circle'
+      case 'error': return 'fa-exclamation-circle'
+      case 'warning': return 'fa-exclamation-triangle'
+      case 'info': return 'fa-info-circle'
+      default: return 'fa-bell'
+    }
   }
 
   getMetaValue(name) {

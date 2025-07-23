@@ -18,7 +18,7 @@ class PersonalitiesController < ApplicationController
     @personality = current_user.build_personality(personality_params)
 
     if @personality.save
-      redirect_to @personality, notice: "Personnalité créée avec succès."
+      redirect_to @personality, notice: "Personnality created successfully."
     else
       render :new, status: :unprocessable_entity
     end
@@ -29,7 +29,7 @@ class PersonalitiesController < ApplicationController
 
   def update
     if @personality.update(personality_params)
-      redirect_to @personality, notice: "Personnalité mise à jour avec succès."
+      redirect_to @personality, notice: "Personality updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -39,7 +39,7 @@ class PersonalitiesController < ApplicationController
     if current_user.personality.present?
       redirect_to current_user.personality
     else
-      redirect_to new_personality_path, notice: "Vous n'avez pas encore de personnalité."
+      redirect_to new_personality_path, notice: "Please create your personality first."
     end
   end
 
@@ -52,7 +52,7 @@ class PersonalitiesController < ApplicationController
   def check_existing_personality
     return unless current_user.personality.present?
 
-    redirect_to current_user.personality, notice: "Vous avez déjà une personnalité."
+    redirect_to current_user.personality, notice: "You already have a personality set up."
   end
 
   def personality_params
