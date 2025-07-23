@@ -159,7 +159,7 @@ export default class extends Controller {
 
   // FONCTION DIRECTE : Sauvegarder (appelée par le bouton)
   saveAndTranscribe() {
-    const title = "Dream " + new Date().toLocaleString()
+    const title = window.prompt("Give a title to your dream:")
     if (!title?.trim()) {
       this.showCustomNotification("A title is required to save your dream!", "warning")
       return
