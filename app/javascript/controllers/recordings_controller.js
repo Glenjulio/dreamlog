@@ -65,6 +65,7 @@ export default class extends Controller {
           this.audioBlob = new Blob(this.audioChunks, { type: "audio/webm" })
           this.audioUrl = URL.createObjectURL(this.audioBlob)
           this.setupAudioElement()
+          // ACTIVER le bouton Play ET montrer les boutons de décision
           this.enablePlayButton()
           this.showDecisionButtons()
           this.stopTimer()
