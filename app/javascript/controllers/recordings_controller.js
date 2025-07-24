@@ -52,7 +52,7 @@ export default class extends Controller {
       .then(stream => {
         this.audioChunks = []
         this.mediaRecorder = new MediaRecorder(stream)
-
+        // MONTRER le bouton Play immédiatement (mais désactivé)
         this.showPlayButtonDisabled()
 
         this.mediaRecorder.ondataavailable = event => {
@@ -105,6 +105,7 @@ export default class extends Controller {
     }
   }
 
+  // Montrer le bouton Play mais désactivé (pendant enregistrement)
   showPlayButtonDisabled() {
     this.playButtonTarget.classList.remove("d-none")
     this.playButtonTarget.disabled = true
@@ -112,7 +113,8 @@ export default class extends Controller {
     this.playButtonTarget.innerHTML = '<i class="fas fa-play"></i>'
     this.playButtonTarget.title = "Recording in progress..."
   }
-
+  
+  // Activer le bouton Play (après enregistrement)
   enablePlayButton() {
     this.playButtonTarget.disabled = false
     this.playButtonTarget.classList.remove("disabled")
@@ -120,10 +122,12 @@ export default class extends Controller {
     this.updatePlayButton()
   }
 
+  // Montrer les boutons de décision
   showDecisionButtons() {
     this.decisionButtonsTarget.classList.remove("d-none")
   }
 
+  // Cacher tous les boutons
   hideAllButtons() {
     this.playButtonTarget.classList.add("d-none")
     this.decisionButtonsTarget.classList.add("d-none")
@@ -150,6 +154,7 @@ export default class extends Controller {
     this.playButtonTarget.innerHTML = `<i class="fas ${icon}"></i>`
   }
 
+  // FONCTION DIRECTE : Sauvegarder (appelée par le bouton)
   saveAndTranscribe() {
     const title = window.prompt("Give a title to your dream:")
     if (!title?.trim()) {
@@ -158,6 +163,7 @@ export default class extends Controller {
     }
 
     console.log("Starting save process...")
+    // Afficher état de chargement
     this.showLoadingState("Saving in progress...")
 
     const file = new File([this.audioBlob], "recording.webm", {
@@ -174,6 +180,7 @@ export default class extends Controller {
         return
       }
 
+      // DÉFINIR dreamData D'ABORD
       const dreamData = {
         dream: {
           title: title,
@@ -182,7 +189,8 @@ export default class extends Controller {
           audio: blob.signed_id
         }
       }
-
+      
+      // PUIS faire le fetch avec .json
       fetch("/dreams.json", {
         method: "POST",
         headers: {
@@ -236,7 +244,8 @@ export default class extends Controller {
       })
     })
   }
-
+  
+  // FONCTION DIRECTE : Supprimer (appelée par le bouton)
   discardRecording() {
     this.cleanupRecording()
     this.showCustomNotification("Recording deleted!", "info")
@@ -252,7 +261,8 @@ export default class extends Controller {
     this.audioElement = null
     this.isPlaying = false
     this.updateTimerDisplay()
-
+    
+    // Cacher tous les boutons
     this.hideAllButtons()
     this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
   }
@@ -298,6 +308,7 @@ export default class extends Controller {
   }
 
   showCustomNotification(message, type) {
+    // Créer la notification directement dans le DOM
     const container = document.querySelector('[data-notifications-target="container"]')
     if (!container) return
 
@@ -321,7 +332,7 @@ export default class extends Controller {
     `
 
     container.appendChild(notification)
-
+    // Animation d'entrée
     setTimeout(() => notification.classList.add('show'), 10)
 
     setTimeout(() => {
