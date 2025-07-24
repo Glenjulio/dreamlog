@@ -52,7 +52,6 @@ export default class extends Controller {
       .then(stream => {
         this.audioChunks = []
         this.mediaRecorder = new MediaRecorder(stream)
-
         // MONTRER le bouton Play immédiatement (mais désactivé)
         this.showPlayButtonDisabled()
 
@@ -115,7 +114,7 @@ export default class extends Controller {
     this.playButtonTarget.innerHTML = '<i class="fas fa-play"></i>'
     this.playButtonTarget.title = "Recording in progress..."
   }
-
+  
   // Activer le bouton Play (après enregistrement)
   enablePlayButton() {
     this.playButtonTarget.disabled = false
@@ -138,7 +137,6 @@ export default class extends Controller {
   }
 
   togglePlayback() {
-    // Ne rien faire si désactivé
     if (this.playButtonTarget.disabled) return
     if (!this.audioElement) return
 
@@ -166,15 +164,12 @@ export default class extends Controller {
     }
 
     console.log("Starting save process...")
-
     // Afficher état de chargement
     this.showLoadingState("Saving in progress...")
 
     const file = new File([this.audioBlob], "recording.webm", {
       type: "audio/webm"
     })
-
-    console.log("File created:", file)
 
     const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
 
@@ -186,9 +181,6 @@ export default class extends Controller {
         return
       }
 
-      console.log("Direct upload successful:", blob)
-      console.log("Now creating dream...")
-
       // DÉFINIR dreamData D'ABORD
       const dreamData = {
         dream: {
@@ -198,9 +190,7 @@ export default class extends Controller {
           audio: blob.signed_id
         }
       }
-
-      console.log("Sending dream data:", dreamData)
-
+      
       // PUIS faire le fetch avec .json
       fetch("/dreams.json", {
         method: "POST",
@@ -212,24 +202,38 @@ export default class extends Controller {
         body: JSON.stringify(dreamData)
       })
       .then(response => {
-        console.log("Response status:", response.status)
-        console.log("Response headers:", response.headers)
-
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         }
-
         return response.json()
       })
       .then(data => {
-        console.log("Dream created successfully:", data)
         this.hideLoadingState()
 
         if (data.success) {
-          this.showCustomNotification("Dream saved successfully!", "success")
-          setTimeout(() => {
-            window.location.href = "/mydreams"
-          }, 1000)
+          const dreamId = data.id
+          this.showCustomNotification("Dream saved, transcribing...", "info")
+
+          // Redirection to transcription page immediately after dream creation and transcription
+          fetch(`/dreams/${dreamId}/transcribe`, {
+            method: "POST",
+            headers: {
+              "X-CSRF-Token": this.getMetaValue("csrf-token")
+            }
+          })
+          .then(resp => {
+            if (resp.redirected) {
+              window.location.href = resp.url
+            } else {
+              this.showCustomNotification("Transcription failed or not redirected", "warning")
+              window.location.href = `/dreams/${dreamId}`
+            }
+          })
+          .catch(error => {
+            console.error("Transcription failed:", error)
+            this.showCustomNotification("Error during transcription", "error")
+            window.location.href = `/dreams/${dreamId}`
+          })
         } else {
           throw new Error(data.errors?.join(", ") || "Unknown error")
         }
@@ -237,11 +241,11 @@ export default class extends Controller {
       .catch(error => {
         console.error("Error during save:", error)
         this.hideLoadingState()
-        this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
+        this.showCustomNotification(`Failed to save dream: ${error.message}` , "error")
       })
     })
   }
-
+  
   // FONCTION DIRECTE : Supprimer (appelée par le bouton)
   discardRecording() {
     this.cleanupRecording()
@@ -258,7 +262,7 @@ export default class extends Controller {
     this.audioElement = null
     this.isPlaying = false
     this.updateTimerDisplay()
-
+    
     // Cacher tous les boutons
     this.hideAllButtons()
     this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
@@ -329,11 +333,9 @@ export default class extends Controller {
     `
 
     container.appendChild(notification)
-
     // Animation d'entrée
     setTimeout(() => notification.classList.add('show'), 10)
 
-    // Auto-remove après 5 secondes
     setTimeout(() => {
       if (notification.parentNode) {
         notification.remove()
