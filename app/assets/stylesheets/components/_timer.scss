@@ -1,0 +1,19 @@
+.timer-display {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #00ffff;
+  text-shadow:
+    0 0 5px #00ffff,
+    0 0 10px #00ffff,
+    0 0 20px #00ffff,
+    0 0 40px rgba(0, 255, 255, 0.5);
+
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 0.3em 1em;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  box-shadow:
+    0 0 10px rgba(0, 255, 255, 0.2),
+    inset 0 0 5px rgba(0, 255, 255, 0.2);
+  margin-bottom: 2rem;
+}
