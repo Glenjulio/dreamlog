@@ -52,6 +52,7 @@ export default class extends Controller {
       .then(stream => {
         this.audioChunks = []
         this.mediaRecorder = new MediaRecorder(stream)
+
         // MONTRER le bouton Play immédiatement (mais désactivé)
         this.showPlayButtonDisabled()
 
@@ -114,7 +115,7 @@ export default class extends Controller {
     this.playButtonTarget.innerHTML = '<i class="fas fa-play"></i>'
     this.playButtonTarget.title = "Recording in progress..."
   }
-  
+
   // Activer le bouton Play (après enregistrement)
   enablePlayButton() {
     this.playButtonTarget.disabled = false
@@ -137,6 +138,7 @@ export default class extends Controller {
   }
 
   togglePlayback() {
+    // Ne rien faire si désactivé
     if (this.playButtonTarget.disabled) return
     if (!this.audioElement) return
 
@@ -155,16 +157,126 @@ export default class extends Controller {
     this.playButtonTarget.innerHTML = `<i class="fas ${icon}"></i>`
   }
 
-  // FONCTION DIRECTE : Sauvegarder (appelée par le bouton)
-  saveAndTranscribe() {
+  // NOUVELLE FONCTION : Utiliser le modal custom au lieu de window.prompt
+  async saveAndTranscribe() {
+    try {
+      // Récupérer le controller du modal
+      const modalElement = document.querySelector('[data-controller~="modal"]')
+      if (!modalElement) {
+        throw new Error('Modal not found')
+      }
+
+      const modalController = this.application.getControllerForElementAndIdentifier(modalElement, 'modal')
+      if (!modalController) {
+        throw new Error('Modal controller not found')
+      }
+
+      // Afficher le modal et attendre la réponse
+      const title = await modalController.show({
+        title: "Save Your Dream",
+        placeholder: "Give your dream a memorable title...",
+        confirmText: "Save Dream",
+        cancelText: "Cancel"
+      })
+
+      console.log("Title received from modal:", title)
+
+      // Continuer avec la logique de sauvegarde
+      this.showLoadingState("Saving in progress...")
+
+      const file = new File([this.audioBlob], "recording.webm", {
+        type: "audio/webm"
+      })
+
+      console.log("File created:", file)
+
+      const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
+
+      upload.create((error, blob) => {
+        if (error) {
+          console.error("Direct upload failed:", error)
+          this.hideLoadingState()
+          this.showCustomNotification("Error during uploading. Try again.", "error")
+          return
+        }
+
+        console.log("Direct upload successful:", blob)
+        console.log("Now creating dream...")
+
+        const dreamData = {
+          dream: {
+            title: title,
+            tags: "voice_recording",
+            private: false,
+            audio: blob.signed_id
+          }
+        }
+
+        console.log("Sending dream data:", dreamData)
+
+        fetch("/dreams.json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-CSRF-Token": this.getMetaValue("csrf-token")
+          },
+          body: JSON.stringify(dreamData)
+        })
+        .then(response => {
+          console.log("Response status:", response.status)
+          console.log("Response headers:", response.headers)
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+          }
+
+          return response.json()
+        })
+        .then(data => {
+          console.log("Dream created successfully:", data)
+          this.hideLoadingState()
+
+          if (data.success) {
+            this.showCustomNotification("Dream saved successfully!", "success")
+            setTimeout(() => {
+              window.location.href = "/mydreams"
+            }, 1000)
+          } else {
+            throw new Error(data.errors?.join(", ") || "Unknown error")
+          }
+        })
+        .catch(error => {
+          console.error("Error during save:", error)
+          this.hideLoadingState()
+          this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
+        })
+      })
+
+    } catch (error) {
+      console.log("Modal cancelled or error:", error.message)
+
+      // Si l'utilisateur a annulé, on ne fait rien
+      if (error.message === 'User cancelled') {
+        this.showCustomNotification("Save cancelled", "info")
+      } else {
+        // Fallback vers le prompt natif en cas d'erreur
+        this.saveAndTranscribeWithFallback()
+      }
+    }
+  }
+
+  // Fonction de fallback si le modal ne fonctionne pas
+  saveAndTranscribeWithFallback() {
     const title = window.prompt("Give a title to your dream:")
     if (!title?.trim()) {
       this.showCustomNotification("A title is required to save your dream!", "warning")
       return
     }
 
-    console.log("Starting save process...")
-    // Afficher état de chargement
+    console.log("Using fallback prompt, starting save process...")
+
+    // Le reste de la logique reste identique
     this.showLoadingState("Saving in progress...")
 
     const file = new File([this.audioBlob], "recording.webm", {
@@ -181,7 +293,6 @@ export default class extends Controller {
         return
       }
 
-      // DÉFINIR dreamData D'ABORD
       const dreamData = {
         dream: {
           title: title,
@@ -190,8 +301,7 @@ export default class extends Controller {
           audio: blob.signed_id
         }
       }
-      
-      // PUIS faire le fetch avec .json
+
       fetch("/dreams.json", {
         method: "POST",
         headers: {
@@ -211,29 +321,10 @@ export default class extends Controller {
         this.hideLoadingState()
 
         if (data.success) {
-          const dreamId = data.id
-          this.showCustomNotification("Dream saved, transcribing...", "info")
-
-          // Redirection to transcription page immediately after dream creation and transcription
-          fetch(`/dreams/${dreamId}/transcribe`, {
-            method: "POST",
-            headers: {
-              "X-CSRF-Token": this.getMetaValue("csrf-token")
-            }
-          })
-          .then(resp => {
-            if (resp.redirected) {
-              window.location.href = resp.url
-            } else {
-              this.showCustomNotification("Transcription failed or not redirected", "warning")
-              window.location.href = `/dreams/${dreamId}`
-            }
-          })
-          .catch(error => {
-            console.error("Transcription failed:", error)
-            this.showCustomNotification("Error during transcription", "error")
-            window.location.href = `/dreams/${dreamId}`
-          })
+          this.showCustomNotification("Dream saved successfully!", "success")
+          setTimeout(() => {
+            window.location.href = "/mydreams"
+          }, 1000)
         } else {
           throw new Error(data.errors?.join(", ") || "Unknown error")
         }
@@ -241,11 +332,11 @@ export default class extends Controller {
       .catch(error => {
         console.error("Error during save:", error)
         this.hideLoadingState()
-        this.showCustomNotification(`Failed to save dream: ${error.message}` , "error")
+        this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
       })
     })
   }
-  
+
   // FONCTION DIRECTE : Supprimer (appelée par le bouton)
   discardRecording() {
     this.cleanupRecording()
@@ -262,7 +353,7 @@ export default class extends Controller {
     this.audioElement = null
     this.isPlaying = false
     this.updateTimerDisplay()
-    
+
     // Cacher tous les boutons
     this.hideAllButtons()
     this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
