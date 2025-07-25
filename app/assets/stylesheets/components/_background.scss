@@ -1,19 +1,100 @@
-/* Halo lumineux central */
-body::after {
-  content: "";
+$quantity: 15;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url("https://i.pinimg.com/originals/44/6e/3b/446e3b79395a287ca32f7977dd83b290.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.firefly {
   position: fixed;
-  top: 30%;
   left: 50%;
-  transform: translate(-50%, -30%);
-  width: 550px;
-  height: 550px;
-  background: radial-gradient(
-    circle,
-    rgba(245, 225, 255, 0.6),   // cœur très lumineux
-    rgba(245, 225, 255, 0.15) 40%,
-    transparent 70%
-  );
-  filter: blur(120px);
+  top: 50%;
+  width: 0.4vw;
+  height: 0.4vw;
+  margin: -0.2vw 0 0 9.8vw;
   pointer-events: none;
-  z-index: 0;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform-origin: -10vw;
+  }
+
+  &::before {
+    background: black;
+    opacity: 0.4;
+    animation: drift 20s ease alternate infinite;
+  }
+
+  &::after {
+    background: white;
+    opacity: 0;
+    box-shadow: 0 0 0vw 0vw yellow;
+    animation: drift 20s ease alternate infinite, flash 8s ease infinite;
+    animation-delay: 0s, 2s;
+  }
+}
+
+// Génère 15 fireflies avec animations spécifiques
+@for $i from 1 through $quantity {
+  .firefly:nth-child(#{$i}) {
+    animation: move#{$i} 60s ease-in-out infinite alternate;
+
+    &::before {
+      animation-duration: 12s;
+    }
+
+    &::after {
+      animation-duration: 12s, 10s;
+      animation-delay: 0s, 1s;
+    }
+  }
+
+  @keyframes move#{$i} {
+    0% {
+      transform: translateX(0vw) translateY(0vh) scale(0.5);
+    }
+    25% {
+      transform: translateX(#{random(100) - 50}vw) translateY(#{random(100) - 50}vh) scale(#{0.3 + random(40) / 100});
+    }
+    50% {
+      transform: translateX(#{random(100) - 50}vw) translateY(#{random(100) - 50}vh) scale(#{0.3 + random(40) / 100});
+    }
+    75% {
+      transform: translateX(#{random(100) - 50}vw) translateY(#{random(100) - 50}vh) scale(#{0.3 + random(40) / 100});
+    }
+    100% {
+      transform: translateX(#{random(100) - 50}vw) translateY(#{random(100) - 50}vh) scale(#{0.3 + random(40) / 100});
+    }
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flash {
+  0%, 30%, 100% {
+    opacity: 0;
+    box-shadow: 0 0 0vw 0vw yellow;
+  }
+  5% {
+    opacity: 1;
+    box-shadow: 0 0 2vw 0.4vw yellow;
+  }
 }
