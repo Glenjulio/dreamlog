@@ -1,7 +1,7 @@
 <h1 class="mb-4">My dreams</h1>
 
 <% @dreams.each do |dream| %>
-  <div class="mb-4 p-4 rounded-4 shadow" style="background-color: #1f1033; border: 1px solid rgba(255, 255, 255, 0.05);">
+  <div class="dream-card mb-4 p-4 rounded-4 shadow">
     <h5 class="mb-2"><%= dream.title %></h5>
     <p class="text-muted mb-3"><strong>Visibility:</strong> <%= dream.private ? "Private" : "Public" %></p>
 

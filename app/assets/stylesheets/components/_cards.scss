@@ -1,0 +1,29 @@
+.dream-card {
+  background: linear-gradient(
+    135deg,
+    #1b1b2f 0%,
+    #12121a 100%
+  );
+  border: 1px solid rgba(0, 234, 255, 0.08);
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: 0 0 25px rgba(0, 234, 255, 0.1);
+  }
+
+  h5 {
+    color: #00eaff; // Titre en néon bleu
+  }
+
+  .text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  audio {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}

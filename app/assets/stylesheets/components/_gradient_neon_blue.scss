@@ -1,0 +1,21 @@
+@mixin gradient-neon-blue {
+  background: linear-gradient(
+    45deg,
+    #00fff7 0%,
+    #2196f3 50%,
+    #0000ff 100%
+  );
+  color: white;
+  box-shadow: 0 0 30px rgba(0, 255, 247, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(0, 255, 247, 0.5);
+  }
+
+  &:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 20px rgba(0, 255, 247, 0.2);
+  }
+}
