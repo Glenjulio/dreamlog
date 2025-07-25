@@ -15,10 +15,21 @@
     <!-- Contrôleur Stimulus pour les enregistrements -->
     <div data-controller="recordings" class="d-flex flex-column align-items-center gap-3">
 
-    <!-- Affichage chrono -->
-    <div style="height: 24px">
-      <span data-recordings-target="timer" class="d-none">00:00</span>
-    </div>
+      <!-- Affichage chrono -->
+      <div style="height: 24px">
+        <span data-recordings-target="timer" class="d-none">00:00</span>
+      </div>
+
+      <!-- Bouton Delete (au-dessus du bouton principal) -->
+      <div class="delete-button-wrapper d-none" data-recordings-target="deleteButton">
+        <button
+          data-action="click->recordings#discardRecording"
+          class="gradient-button btn-outline"
+          title="Delete"
+        >
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
 
       <!-- Bouton principal d'enregistrement -->
       <button
@@ -42,36 +53,25 @@
         </button>
       </div>
 
-      <!-- Boutons de décision (cachés par défaut) -->
-      <div style="height: 56px;">
-        <div data-recordings-target="decisionButtons" class="d-flex gap-3 d-none">
+      <!-- Bouton Save (en dessous du bouton principal) -->
+      <div class="decision-buttons-wrapper d-none" data-recordings-target="saveButton">
+        <div class="decision-buttons">
           <button
-            data-action="click->recordings#discardRecording"
-            class="gradient-button btn-outline d-flex justify-content-center align-items-center"
-            style="width: 48px; height: 48px;"
-            title="Delete"
+            data-action="click->recordings#saveAndTranscribe"
+            class="gradient-button"
+            title="Save"
           >
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-save"></i>
           </button>
-
-
-        <button
-          data-action="click->recordings#saveAndTranscribe"
-          class="gradient-button d-flex justify-content-center align-items-center"
-          style="width: 48px; height: 48px;"
-          title="Save"
-        >
-          <i class="fas fa-save"></i>
-        </button>
+        </div>
       </div>
-    </div>
 
     </div> <!-- Fin du data-controller="recordings" -->
 
     <!-- Lien vers transcription manuelle -->
     <%= link_to new_dream_path,
-    class: "d-none btn text-white shadow-lg",
-    style: "width: 200; height: 200; border-radius: 50%; background: linear-gradient(45deg, #E175D3, #731F8A, #A87CDB); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: none;" do %>
+      class: "d-none btn text-white shadow-lg",
+      style: "width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(45deg, #E175D3, #731F8A, #A87CDB); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: none;" do %>
       Manual Transcription
     <% end %>
   </div>

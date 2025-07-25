@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 
 export default class extends Controller {
-  static targets = ["button", "playButton", "decisionButtons", "timer"]
+  static targets = ["button", "playButton", "deleteButton", "saveButton", "timer"]
 
   connect() {
     this.recording = false
@@ -126,13 +126,27 @@ export default class extends Controller {
 
   // Montrer les boutons de décision
   showDecisionButtons() {
-    this.decisionButtonsTarget.classList.remove("d-none")
+    if (this.hasDeleteButtonTarget) {
+      this.deleteButtonTarget.classList.remove("d-none");
+    }
+
+    if (this.hasSaveButtonTarget) {
+      this.saveButtonTarget.classList.remove("d-none");
+    }
   }
 
   // Cacher tous les boutons
   hideAllButtons() {
     this.playButtonTarget.classList.add("d-none")
-    this.decisionButtonsTarget.classList.add("d-none")
+
+    if (this.hasDeleteButtonTarget) {
+    this.deleteButtonTarget.classList.add("d-none")
+    }
+
+    if (this.hasSaveButtonTarget) {
+      this.saveButtonTarget.classList.add("d-none")
+    }
+
     this.playButtonTarget.disabled = false
     this.playButtonTarget.classList.remove("disabled")
   }
@@ -322,6 +336,8 @@ export default class extends Controller {
           audio: blob.signed_id
         }
       }
+
+      // PUIS faire le fetch avec .json
 
       fetch("/dreams.json", {
         method: "POST",

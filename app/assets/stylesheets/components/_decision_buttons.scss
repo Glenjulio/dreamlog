@@ -1,0 +1,42 @@
+.decision-buttons-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.decision-buttons {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.decision-buttons .gradient-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.15);
+}
+
+.delete-button-wrapper {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+
+  .gradient-button {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 0 20px rgba(255, 50, 50, 0.15);
+  }
+}
