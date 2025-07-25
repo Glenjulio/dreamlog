@@ -9,18 +9,18 @@
     <h2 class="display-6 text-white fw-bold">Describe your dream!</h2>
   </div>
 
-  <!-- Bouton Record : centré avec flex auto -->
+  <!-- Zone centrale avec bouton unique -->
   <div class="d-flex flex-column flex-grow-1 justify-content-center align-items-center w-100 gap-3">
 
-    <!-- Contrôleur Stimulus pour les enregistrements -->
+    <!-- Contrôleur Stimulus -->
     <div data-controller="recordings" class="d-flex flex-column align-items-center gap-3">
 
-      <!-- Affichage chrono -->
+      <!-- Chronomètre -->
       <div class="mb-2">
         <span data-recordings-target="timer" class="timer-display d-none">00:00</span>
       </div>
 
-      <!-- Bouton Delete (au-dessus du bouton principal) -->
+      <!-- Bouton Supprimer (au-dessus du bouton principal) -->
       <div class="delete-button-wrapper d-none" data-recordings-target="deleteButton">
         <button
           data-action="click->recordings#discardRecording"
@@ -31,7 +31,7 @@
         </button>
       </div>
 
-      <!-- Bouton principal d'enregistrement -->
+      <!-- Bouton principal multifonction (record/stop/play) -->
       <button
         data-action="click->recordings#toggle"
         data-recordings-target="button"
@@ -41,19 +41,7 @@
         <i class="fa-solid fa-microphone-lines fa-2x"></i>
       </button>
 
-      <!-- Bouton Play (caché par défaut) -->
-      <div style="height: 56px;">
-        <button
-          data-action="click->recordings#togglePlayback"
-          data-recordings-target="playButton"
-          class="play-button btn d-none"
-          title="Listen to recording"
-        >
-          <i class="fas fa-play"></i>
-        </button>
-      </div>
-
-      <!-- Bouton Save (en dessous du bouton principal) -->
+      <!-- Bouton Enregistrer -->
       <div class="decision-buttons-wrapper d-none" data-recordings-target="saveButton">
         <div class="decision-buttons">
           <button
@@ -66,7 +54,7 @@
         </div>
       </div>
 
-    </div> <!-- Fin du data-controller="recordings" -->
+    </div> <!-- Fin controller recordings -->
 
     <!-- Lien vers transcription manuelle -->
     <%= link_to new_dream_path,
