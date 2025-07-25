@@ -1,0 +1,52 @@
+<!-- app/views/shared/_title_modal.html.erb -->
+<div class="custom-modal d-none"
+    data-controller="modal"
+    data-action="keydown@document->modal#keydown">
+
+  <div class="modal-backdrop"
+      data-modal-target="backdrop"
+      data-action="click->modal#backdropClick"></div>
+
+  <div class="modal-dialog" data-modal-target="dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h3 class="modal-title" data-modal-target="title">
+          Enter dream title
+        </h3>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="dream-title-input">
+            Dream Title
+          </label>
+          <input type="text"
+                id="dream-title-input"
+                class="form-control"
+                data-modal-target="input"
+                placeholder="Give your dream a memorable title..."
+                maxlength="200"
+                autocomplete="off">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="modal-btn btn-secondary"
+                data-modal-target="cancelButton"
+                data-action="click->modal#cancel">
+          Cancel
+        </button>
+
+        <button type="button"
+                class="modal-btn btn-primary"
+                data-modal-target="confirmButton"
+                data-action="click->modal#confirm">
+          Save Dream
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
