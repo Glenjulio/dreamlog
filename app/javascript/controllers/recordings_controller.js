@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 
 export default class extends Controller {
-  static targets = ["button", "playButton", "decisionButtons", "timer"]
+  static targets = ["button", "playButton", "deleteButton", "saveButton", "timer"]
 
   connect() {
     this.recording = false
@@ -114,7 +114,7 @@ export default class extends Controller {
     this.playButtonTarget.innerHTML = '<i class="fas fa-play"></i>'
     this.playButtonTarget.title = "Recording in progress..."
   }
-  
+
   // Activer le bouton Play (après enregistrement)
   enablePlayButton() {
     this.playButtonTarget.disabled = false
@@ -125,13 +125,27 @@ export default class extends Controller {
 
   // Montrer les boutons de décision
   showDecisionButtons() {
-    this.decisionButtonsTarget.classList.remove("d-none")
+    if (this.hasDeleteButtonTarget) {
+      this.deleteButtonTarget.classList.remove("d-none");
+    }
+
+    if (this.hasSaveButtonTarget) {
+      this.saveButtonTarget.classList.remove("d-none");
+    }
   }
 
   // Cacher tous les boutons
   hideAllButtons() {
     this.playButtonTarget.classList.add("d-none")
-    this.decisionButtonsTarget.classList.add("d-none")
+
+    if (this.hasDeleteButtonTarget) {
+    this.deleteButtonTarget.classList.add("d-none")
+    }
+
+    if (this.hasSaveButtonTarget) {
+      this.saveButtonTarget.classList.add("d-none")
+    }
+
     this.playButtonTarget.disabled = false
     this.playButtonTarget.classList.remove("disabled")
   }
@@ -190,7 +204,7 @@ export default class extends Controller {
           audio: blob.signed_id
         }
       }
-      
+
       // PUIS faire le fetch avec .json
       fetch("/dreams.json", {
         method: "POST",
@@ -245,7 +259,7 @@ export default class extends Controller {
       })
     })
   }
-  
+
   // FONCTION DIRECTE : Supprimer (appelée par le bouton)
   discardRecording() {
     this.cleanupRecording()
@@ -262,7 +276,7 @@ export default class extends Controller {
     this.audioElement = null
     this.isPlaying = false
     this.updateTimerDisplay()
-    
+
     // Cacher tous les boutons
     this.hideAllButtons()
     this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
