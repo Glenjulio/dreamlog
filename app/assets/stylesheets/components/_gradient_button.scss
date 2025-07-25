@@ -1,4 +1,6 @@
+@import "components/gradient_neon_blue";
 .gradient-button {
+  @include gradient-neon-blue;
   display: inline-block;
   padding: 0.6rem 1.2rem;
   border-radius: 16px;
@@ -6,25 +8,24 @@
   font-weight: 500;
   text-align: center;
   color: white;
-  background: linear-gradient(45deg, #8300c4, #4c00a4);
   border: none;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
   transition: all 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
     text-decoration: none;
   }
 
   &:active {
     transform: scale(0.98);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 10px rgba(0, 255, 136, 0.2);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(131, 0, 196, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.4);
   }
 }

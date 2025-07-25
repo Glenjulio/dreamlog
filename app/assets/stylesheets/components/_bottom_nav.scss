@@ -1,10 +1,12 @@
+@import "components/gradient_neon_blue";
+
 .nav-plus-button {
+  @include gradient-neon-blue;
   text-decoration: none;
   width: 60px;
   height: 60px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(45deg, #E175D3 0%, #9B3BBF 50%, #A87CDB 100%);
   display: flex;
   align-items: center;
   justify-content: center;
