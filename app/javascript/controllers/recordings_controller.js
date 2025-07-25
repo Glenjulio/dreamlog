@@ -238,10 +238,31 @@ export default class extends Controller {
           this.hideLoadingState()
 
           if (data.success) {
-            this.showCustomNotification("Dream saved successfully!", "success")
-            setTimeout(() => {
-              window.location.href = "/mydreams"
-            }, 1000)
+            const dreamId = data.id
+            this.showCustomNotification("Dream saved, transcribing...", "info")
+
+            // Redirection vers transcription automatique après sauvegarde
+            fetch(`/dreams/${dreamId}/transcribe`, {
+              method: "POST",
+              headers: {
+                "X-CSRF-Token": this.getMetaValue("csrf-token")
+              }
+            })
+            .then(resp => {
+              if (resp.redirected) {
+                window.location.href = resp.url
+              } else {
+                this.showCustomNotification("Transcription completed", "success")
+                // Rediriger vers la page de transcription
+                window.location.href = `/dreams/${dreamId}/transcription`
+              }
+            })
+            .catch(error => {
+              console.error("Transcription failed:", error)
+              this.showCustomNotification("Error during transcription", "error")
+              // En cas d'erreur, rediriger vers la page du rêve
+              window.location.href = `/dreams/${dreamId}`
+            })
           } else {
             throw new Error(data.errors?.join(", ") || "Unknown error")
           }
@@ -321,10 +342,29 @@ export default class extends Controller {
         this.hideLoadingState()
 
         if (data.success) {
-          this.showCustomNotification("Dream saved successfully!", "success")
-          setTimeout(() => {
-            window.location.href = "/mydreams"
-          }, 1000)
+          const dreamId = data.id
+          this.showCustomNotification("Dream saved, transcribing...", "info")
+
+          // Redirection vers transcription automatique également dans le fallback
+          fetch(`/dreams/${dreamId}/transcribe`, {
+            method: "POST",
+            headers: {
+              "X-CSRF-Token": this.getMetaValue("csrf-token")
+            }
+          })
+          .then(resp => {
+            if (resp.redirected) {
+              window.location.href = resp.url
+            } else {
+              this.showCustomNotification("Transcription failed or not redirected", "warning")
+              window.location.href = `/dreams/${dreamId}`
+            }
+          })
+          .catch(error => {
+            console.error("Transcription failed:", error)
+            this.showCustomNotification("Error during transcription", "error")
+            window.location.href = `/dreams/${dreamId}`
+          })
         } else {
           throw new Error(data.errors?.join(", ") || "Unknown error")
         }
