@@ -1,13 +1,105 @@
-<!-- app/views/dreams/index.html.erb -->
-<h1 class="page-title">Rêves publics</h1>
+<h1 class="page-title">My Dreams</h1>
 
-<% @dreams.each do |dream| %>
-  <div>
-    <strong><%= dream.title %></strong><br>
-    par <%= dream.user.first_name.presence || dream.user.email %><br>
-    <%= link_to "Voir", dream_path(dream) %>
+<!-- Search bar and filters -->
+<div class="search-filters mb-4">
+  <%= form_with url: dreams_path, method: :get, local: true, class: "search-form" do |form| %>
+    <div class="search-row">
+      <!-- Main search input -->
+      <div class="search-input">
+        <%= form.text_field :search,
+            placeholder: "Search in dreams (title, tags, content)...",
+            value: params[:search],
+            class: "form-control" %>
+      </div>
+
+      <!-- Tag filter -->
+      <div class="tag-filter">
+        <%= form.select :tag,
+            options_for_select([['All tags', '']] + @available_tags.map { |tag| [tag, tag] }, params[:tag]),
+            {},
+            { class: "form-select" } %>
+      </div>
+
+      <!-- Buttons -->
+      <div class="search-actions">
+        <%= form.submit "Search", class: "btn btn-primary" %>
+        <%= link_to "Reset", dreams_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Popular tags (clickable) -->
+<% if @available_tags.any? %>
+  <div class="popular-tags mb-4">
+    <h6>Popular tags:</h6>
+    <div class="tag-cloud">
+      <% @available_tags.first(10).each do |tag| %>
+        <%= link_to tag, dreams_path(tag: tag),
+            class: "tag-link #{'active' if params[:tag] == tag}" %>
+      <% end %>
+    </div>
   </div>
 <% end %>
+
+<!-- Results -->
+<div class="dreams-results">
+  <% if params[:search].present? || params[:tag].present? %>
+    <p class="results-info">
+      <%= pluralize(@dreams.count, 'dream') %> found
+      <% if params[:search].present? %>
+        for "<%= params[:search] %>"
+      <% end %>
+      <% if params[:tag].present? %>
+        with tag "<%= params[:tag] %>"
+      <% end %>
+    </p>
+  <% end %>
+
+  <div class="dreams-grid">
+    <% @dreams.each do |dream| %>
+      <div class="dream-card">
+        <div class="dream-card-header">
+          <h3><%= link_to dream.title, dream_path(dream) %></h3>
+          <p class="dream-meta">
+            by <%= dream.user.first_name.presence || dream.user.email %>
+            • <%= dream.created_at.strftime("%m/%d/%Y") %>
+          </p>
+        </div>
+
+        <div class="dream-card-body">
+          <!-- Content preview if searching in text -->
+          <% if params[:search].present? && dream.transcription&.content.present? %>
+            <div class="dream-excerpt">
+              <%= highlight_search_term(truncate(dream.transcription.content, length: 150), params[:search]) %>
+            </div>
+          <% elsif dream.transcription&.content.present? %>
+            <div class="dream-excerpt">
+              <%= truncate(dream.transcription.content, length: 150) %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="dream-card-footer">
+          <% if dream.tags.present? %>
+            <div class="dream-tags">
+              <% dream.tags.split(',').map(&:strip).each do |tag| %>
+                <%= link_to tag, dreams_path(tag: tag), class: "tag-badge" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @dreams.empty? %>
+    <div class="no-results">
+      <p>No dreams found for your search.</p>
+      <%= link_to "View all dreams", dreams_path, class: "btn btn-outline-primary" %>
+    </div>
+  <% end %>
+</div>
 
 <!-- Navbar -->
 <%= render "shared/bottom_nav" %>
