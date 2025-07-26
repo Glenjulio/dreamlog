@@ -24,6 +24,9 @@
     <!-- Flash Messages as JSON for JavaScript processing -->
     <%= render_flash_notifications %>
 
+    <!-- Analysis Loader -->
+    <%= render "shared/analysis_loader" %>
+
     <!-- Contenu principal avec padding pour ne pas être masqué par la bottom_nav -->
     <div class="main-content w-100 flex-grow-1 d-flex flex-column justify-content-center align-items-center py-4" style="z-index: 1; position: relative;">
       <%= yield %>

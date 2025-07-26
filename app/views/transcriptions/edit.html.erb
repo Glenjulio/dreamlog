@@ -6,14 +6,15 @@
   </p>
 
   <%= simple_form_for [@dream, @transcription],
-        url: dream_transcription_path(@dream),
-        method: :patch,
-        html: {
-          data: {
-            controller: "step-form",
-            step_form_current_value: 0
-          }
-        } do |f| %>
+      url: dream_transcription_path(@dream),
+      method: :patch,
+      html: {
+        data: {
+          controller: "step-form analysis-form",
+          step_form_current_value: 0,
+          analysis_form_target: "form"
+        }
+      } do |f| %>
 
     <!-- Step 0: Dream or Nightmare -->
     <div data-step-form-target="step" data-controller="choice-toggle">
@@ -103,10 +104,14 @@
         Next
       </button>
 
-      <%= f.button :submit,
-          "Analyse",
-          class: "gradient-button",
-          data: { step_form_target: "submit" } %>
+        <%= f.button :submit,
+    "Analyse",
+    class: "gradient-button",
+    data: {
+      step_form_target: "submit",
+      analysis_form_target: "submitButton",
+      action: "click->analysis-form#submitWithLoader"
+    } %>
     </div>
   <% end %>
 </div>
