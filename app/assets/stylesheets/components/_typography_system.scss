@@ -17,6 +17,7 @@
 h1, .h1, .dreamlog-title {
   font-family: var(--font-title) !important;
   font-size: 4rem !important;
+  font-weight: 900 !important;
   color: var(--white) !important;
   text-shadow: 0 0 20px var(--text-glow) !important;
   animation: glow 3s ease-in-out infinite alternate !important;
@@ -36,6 +37,7 @@ h1, .h1, .dreamlog-title {
 h2, .h2, .subtitle {
   font-family: var(--font-script) !important;
   font-size: 2.2rem !important;
+  font-weight: 700 !important;
   color: rgba(255, 255, 255, 0.95) !important;
   font-weight: 500 !important;
   margin-bottom: 1.5rem !important;
