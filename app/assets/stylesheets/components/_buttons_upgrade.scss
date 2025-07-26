@@ -1,0 +1,363 @@
+// =============================================================================
+// POLICES GOOGLE FONTS POUR DREAMLOG
+// =============================================================================
+
+:root {
+  --font-title: 'Great Vibes', cursive;
+  --font-script: 'Dancing Script', cursive;
+  --primary-blue: #6366F1;
+  --primary-cyan: #00fff7;
+  --pink-accent: #e94560;
+  --white: #ffffff;
+}
+
+// =============================================================================
+// TITRE DREAMLOG AVEC NOUVELLE POLICE
+// =============================================================================
+
+.dreamlog-title {
+  font-family: var(--font-title) !important;
+  font-size: 4rem !important;
+  color: var(--white) !important;
+  text-shadow: 0 0 20px rgba(0, 255, 247, 0.5) !important;
+  animation: glow 3s ease-in-out infinite alternate !important;
+
+  @media (max-width: 768px) {
+    font-size: 3rem !important;
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
+  }
+  to {
+    text-shadow:
+      0 0 30px rgba(0, 255, 247, 0.8),
+      0 0 40px rgba(0, 255, 247, 0.3);
+  }
+}
+
+// =============================================================================
+// SOUS-TITRE AVEC NOUVELLE POLICE
+// =============================================================================
+
+.subtitle,
+h2.display-6 {
+  font-family: var(--font-script) !important;
+  font-size: 1.8rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500 !important;
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem !important;
+  }
+}
+
+// =============================================================================
+// BOUTON PRINCIPAL D'ENREGISTREMENT - STYLE MAGIQUE
+// =============================================================================
+
+.record-button {
+  width: 35vw !important;
+  height: 35vw !important;
+  max-width: 250px !important;
+  max-height: 250px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-cyan) 100%) !important;
+  border: none !important;
+  color: var(--white) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 5rem !important;
+  box-shadow:
+    0 15px 40px rgba(99, 102, 241, 0.4),
+    0 0 60px rgba(99, 102, 241, 0.3),
+    0 0 100px rgba(99, 102, 241, 0.2) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+
+  // Bordure animée
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-blue), var(--primary-cyan), var(--pink-accent), var(--primary-blue));
+    border-radius: 50%;
+    z-index: -1;
+    background-size: 400%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  &:active {
+    transform: scale(0.95) !important;
+  }
+
+  // État d'enregistrement
+  &.recording {
+    background: linear-gradient(135deg, var(--pink-accent) 0%, #ff6b6b 100%) !important;
+    animation: recordingPulse 1s infinite ease-in-out !important;
+  }
+
+  @media (max-width: 768px) {
+    width: 40vw !important;
+    height: 40vw !important;
+    font-size: 3rem !important;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes recordingPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+// =============================================================================
+// TIMER AMÉLIORÉ
+// =============================================================================
+
+.timer-display {
+  font-size: 1.5rem !important;
+  color: var(--white) !important;
+  background: rgba(0, 255, 247, 0.1) !important;
+  padding: 0.8rem 1.5rem !important;
+  border-radius: 25px !important;
+  border: 2px solid rgba(0, 255, 247, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  animation: pulse 2s infinite ease-in-out !important;
+  text-shadow: 0 0 10px rgba(0, 255, 247, 0.5) !important;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+// =============================================================================
+// BOUTONS GRADIENT (RECTANGLES ARRONDIS)
+// =============================================================================
+
+.gradient-button {
+  background: linear-gradient(45deg, var(--primary-blue) 0%, var(--primary-cyan) 100%) !important;
+  color: var(--white) !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 1rem 1.5rem !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  min-width: 100px !important;
+  min-height: 50px !important;
+
+  &:active {
+    transform: scale(0.98) !important;
+  }
+
+  // Variante pour suppression
+  &.btn-outline {
+    background: linear-gradient(45deg, var(--pink-accent) 0%, #ff6b6b 100%) !important;
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.3) !important;
+  }
+}
+
+// =============================================================================
+// BOUTONS POUBELLE ET SAVE (RONDS)
+// =============================================================================
+
+.gradient-button[title="Delete"],
+.gradient-button[title="Save"],
+.delete-button-wrapper .gradient-button,
+.decision-buttons .gradient-button {
+  border-radius: 50% !important;
+  width: 60px !important;
+  height: 60px !important;
+  padding: 0 !important;
+  min-width: 60px !important;
+  min-height: 60px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.5rem !important;
+}
+
+// =============================================================================
+// BOUTONS OPTIONS (PLUS LARGES POUR LE TEXTE)
+// =============================================================================
+
+.option-button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--white) !important;
+  border: 2px solid var(--primary-blue) !important;
+  border-radius: 20px !important;
+  padding: 1.2rem 2rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  min-height: 60px !important;
+  min-width: 120px !important;
+  position: relative !important;
+
+  &:active,
+  &.selected,
+  &.active,
+  &[aria-pressed="true"],
+  &[data-selected="true"] {
+    background: var(--primary-blue) !important;
+    border-color: var(--primary-cyan) !important;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5) !important;
+    transform: scale(1.05) !important;
+  }
+
+  // Si c'est un input radio checké
+  input[type="radio"]:checked + &,
+  &:has(input[type="radio"]:checked) {
+    background: var(--primary-blue) !important;
+    border-color: var(--primary-cyan) !important;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5) !important;
+    transform: scale(1.05) !important;
+  }
+
+  // Supprimer les puces radio
+  &::before,
+  &::after {
+    display: none !important;
+    content: none !important;
+  }
+}
+
+// =============================================================================
+// ÉLIMINATION TOTALE DES PUCES ET INPUT RADIO
+// =============================================================================
+
+// Cacher tous les input radio
+input[type="radio"],
+input[type="checkbox"] {
+  display: none !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+// Supprimer les puces des listes
+ul, ol, li {
+  list-style: none !important;
+  list-style-type: none !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+}
+
+ul::before,
+ol::before,
+li::before,
+ul::after,
+ol::after,
+li::after {
+  display: none !important;
+  content: none !important;
+}
+
+// Supprimer les puces des labels
+label,
+label::before,
+label::after {
+  list-style: none !important;
+}
+
+// Spécifiquement pour les éléments de choix
+[data-choice-toggle-target],
+[data-choice-toggle],
+[data-action*="choice-toggle"],
+[data-action*="toggle"] {
+  list-style: none !important;
+  position: relative !important;
+}
+
+[data-action*="choice-toggle"]::before,
+[data-action*="toggle"]::before {
+  display: none !important;
+  content: none !important;
+}
+
+// Pour les sections d'émojis et choix
+.emoji-select,
+.emoji-select ul,
+.emoji-select li,
+.choice-toggle,
+.choice-section {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+// =============================================================================
+// NAVIGATION
+// =============================================================================
+
+.bottom-nav {
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(15px) !important;
+  border-radius: 25px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+    transition: all 0.3s ease !important;
+    border-radius: 15px !important;
+    padding: 0.5rem 1rem !important;
+
+    &:hover,
+    &.active {
+      color: var(--primary-blue) !important;
+      background: rgba(0, 255, 247, 0.1) !important;
+      text-shadow: 0 0 10px rgba(0, 255, 247, 0.5) !important;
+    }
+  }
+}
+
+// =============================================================================
+// RESPONSIVE
+// =============================================================================
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-bottom: 120px !important;
+  }
+
+  .gradient-button {
+    padding: 0.8rem 1.2rem !important;
+    font-size: 0.9rem !important;
+    min-width: 80px !important;
+  }
+
+  .option-button {
+    padding: 1rem 1.5rem !important;
+    font-size: 1rem !important;
+    min-width: 100px !important;
+  }
+
+  .gradient-button[title="Delete"],
+  .gradient-button[title="Save"],
+  .delete-button-wrapper .gradient-button,
+  .decision-buttons .gradient-button {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    font-size: 1.2rem !important;
+  }
+}
