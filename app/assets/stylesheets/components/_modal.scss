@@ -1,4 +1,5 @@
 // app/assets/stylesheets/components/_modal.scss
+@import "gradient_neon_blue";
 
 .custom-modal {
   position: fixed;
@@ -33,7 +34,15 @@
 }
 
 .modal-dialog {
+  @include gradient-neon-blue;
+
   position: relative;
+  transform: translateY(-20px) scale(0.95);
+  transition: transform 0.3s ease;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
   width: 90%;
   max-width: 450px;
   margin: 20px;
@@ -95,9 +104,9 @@
 
       &:focus {
         outline: none;
-        border-color: #E175D3;
+        border-color: #0000ff;
         background: rgba(255, 255, 255, 0.12);
-        box-shadow: 0 0 0 3px rgba(225, 117, 211, 0.2);
+        box-shadow: 0 0 0 3px #0000ff;
       }
 
       &.is-invalid {
@@ -158,18 +167,7 @@
 
     // Bouton principal (Save)
     &.btn-primary {
-      background: linear-gradient(45deg, #E175D3 0%, #9B3BBF 50%, #A87CDB 100%);
-      color: white;
-      border: 1px solid transparent;
-
-      &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(225, 117, 211, 0.3);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
+      @include gradient_neon_blue;
 
       &:disabled {
         opacity: 0.6;
