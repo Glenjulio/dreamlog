@@ -1,0 +1,73 @@
+<!-- app/views/shared/_title_modal.html.erb -->
+<div class="custom-modal d-none"
+     data-controller="modal"
+     data-action="keydown@document->modal#keydown"
+     style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+
+  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);"
+       data-modal-target="backdrop"
+       data-action="click->modal#backdropClick"></div>
+
+  <div data-modal-target="dialog"
+       style="position: relative; transform: translateY(-20px) scale(0.95); transition: transform 0.3s ease; background: rgba(26, 0, 51, 0.95); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); backdrop-filter: blur(20px); overflow: hidden; width: 90%; max-width: 450px; margin: 20px;">
+
+    <div style="padding: 24px 24px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+      <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: white; text-align: center;" data-modal-target="title">
+        Enter dream title
+      </h3>
+    </div>
+
+    <div style="padding: 20px 24px;">
+      <div style="margin-bottom: 20px;">
+        <label for="dream-title-input" style="display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; color: rgba(255, 255, 255, 0.8);">
+          Dream Title
+        </label>
+        <input type="text"
+               id="dream-title-input"
+               data-modal-target="input"
+               placeholder="Give your dream a memorable title..."
+               maxlength="200"
+               autocomplete="off"
+               style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white; font-size: 1rem; transition: all 0.2s ease; box-sizing: border-box;">
+      </div>
+    </div>
+
+    <div style="padding: 16px 24px 24px; display: flex; gap: 12px; justify-content: flex-end;">
+      <button type="button"
+              data-modal-target="cancelButton"
+              data-action="click->modal#cancel"
+              style="display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s ease; min-width: 80px; background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.2);">
+        Cancel
+      </button>
+
+      <button type="button"
+              data-modal-target="confirmButton"
+              data-action="click->modal#confirm"
+              style="display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s ease; min-width: 80px; background: linear-gradient(45deg, #E175D3 0%, #9B3BBF 50%, #A87CDB 100%); color: white; border: 1px solid transparent;">
+        Save Dream
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.custom-modal.show {
+  opacity: 1 !important;
+}
+
+.custom-modal.show [data-modal-target="dialog"] {
+  transform: translateY(0) scale(1) !important;
+}
+
+.custom-modal input:focus {
+  outline: none !important;
+  border-color: #E175D3 !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 0 0 3px rgba(225, 117, 211, 0.2) !important;
+}
+
+.custom-modal button:hover {
+  transform: translateY(-1px) !important;
+}
+</style>
