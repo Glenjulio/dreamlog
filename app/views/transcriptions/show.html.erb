@@ -1,14 +1,47 @@
+<!-- Titre principal avec icône -->
+<div class="dream-header text-center mb-4 mt-3">
+  <h1 class="dream-title d-flex align-items-center justify-content-center gap-3">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z"/>
+    </svg>
+    Your Dream
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z"/>
+    </svg>
+  </h1>
+</div>
+
 <% if @transcription.present? %>
   <div class="container my-5">
-    <h2><%= @dream.title %></h2>
-    <p><%= @transcription.content %></p>
+    <!-- Titre du rêve -->
+    <h2 class="text-center mb-4"><%= @dream.title %></h2>
+
+    <!-- Contenu de la transcription -->
+    <div class="transcription-content mb-4 text-center">
+      <p class="mx-auto" style="max-width: 800px;"><%= @transcription.content %></p>
+    </div>
   </div>
 
   <div class="d-flex gap-3 justify-content-center my-4">
     <%= link_to 'Next', edit_dream_transcription_path(@dream), class: 'gradient-button' %>
   </div>
 <% else %>
-  <p>No transcription found for this dream.</p>
+  <!-- Titre principal avec nuages même sans transcription -->
+  <div class="dream-header text-center mb-4 mt-3">
+    <h1 class="dream-title d-flex align-items-center justify-content-center gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud">
+        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z"/>
+      </svg>
+      Your Dream
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud">
+        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z"/>
+      </svg>
+    </h1>
+  </div>
+
+  <div class="container my-5">
+    <p class="text-center">No transcription found for this dream.</p>
+  </div>
 <% end %>
 
 <%= render "shared/bottom_nav" %>
