@@ -19,8 +19,8 @@ select {
   margin-bottom: 1.5rem;
 
   &:focus {
-    border-color: #ab00ff;
+    border-color: #0000ff;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(171, 0, 255, 0.2);
+    box-shadow: 0 0 0 2px #0000ff;
   }
 }
