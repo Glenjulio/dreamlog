@@ -15,6 +15,11 @@ class OpenAiService
   def call
     Rails.logger.info "🧠 Generating AI analysis for transcription #{@transcription.id}"
 
+    detected_language = detect_language(@transcription.content)
+    Rails.logger.info "🌍 Detected language: #{detected_language}"
+
+    @language_code = detected_language || 'fr'
+
     response = @client.chat(
       parameters: {
         model: "gpt-4",
@@ -61,27 +66,29 @@ class OpenAiService
 
   def system_prompt
     <<~PROMPT.strip
-      Tu es un expert en interprétation des rêves, spécialisé dans l'analyse psychologique et symbolique.
+      You are an expert in dream interpretation, specialized in psychological and symbolic analysis.
 
-      Ton rôle :
-      - Analyser les rêves avec empathie et profondeur
-      - Identifier les symboles, émotions et thèmes principaux
-      - Proposer des interprétations basées sur la psychologie des rêves
-      - Adapter ton analyse selon le profil du rêveur si fourni
+      Your role:
+      - Analyze the dream with empathy and psychological depth
+      - Identify key symbols, emotions, and themes
+      - Provide interpretations based on dream psychology
+      - If the user's personality profile is available, take it into account
 
-      Format de réponse :
-      - Structure claire avec sections (Symboles, Émotions, Interprétation, Conseils)
-      - Utilise uniquement du texte brut. Ne formate pas avec Markdown (pas de **gras**, *italique*, ni de listes `-` ou `*`, ni de `###`)
-      - Ton bienveillant et professionnel
-      - Vouvoie la personne
-      - Éviter les affirmations absolues, utiliser "peut suggérer", "pourrait indiquer"
-      - Maximum 1200 mots
+      Instructions:
+      - You must strictly respond in the same language as the dream transcription. Do not translate or use any other language.
+      - Use clear sections to organise your analysis: symbols, emotions, interpretations, suggestions.
+      - Always include all four sections, even if one of them contains limited insights.
+      - Use exactly the following emojis together with the section titles — no substitutions or additional symbols: 🎭 Symbols, ❤️ Emotions, 🔍 Interpretation, 🌟 Suggestions
+      - Use plain text only (no Markdown formatting, no lists, no titles)
+      - Use compassionate, non-judgmental language, as if speaking to a friend seeking insight.
+      - Avoid absolute statements; prefer "may suggest", "might indicate"
+      - Keep each section around 3–6 paragraphs. Do not exceed 1200 words total.
     PROMPT
   end
 
   def user_message
     message = <<~MSG.strip
-      Voici le rêve à analyser :
+      Please analyze the following dream:
 
       "#{@transcription.content}"
     MSG
@@ -94,15 +101,15 @@ class OpenAiService
   end
 
   def personality_context
-    context = "Profil du rêveur :\n"
-    context += "- Âge : #{@personality.age} ans\n" if @personality.age.present?
-    context += "- Genre : #{@personality.gender}\n" if @personality.gender.present?
-    context += "- Profession : #{@personality.job}\n" if @personality.job.present?
-    context += "- Humeur actuelle : #{@personality.mood}\n" if @personality.mood.present?
-    context += "- Situation relationnelle : #{@personality.relationship}\n" if @personality.relationship.present?
-    context += "- Description personnelle : #{@personality.description}\n" if @personality.description.present?
+    context = "Dreamer's profile:\n"
+    context += "- Age: #{@personality.age} years\n" if @personality.age.present?
+    context += "- Gender: #{@personality.gender}\n" if @personality.gender.present?
+    context += "- Job: #{@personality.job}\n" if @personality.job.present?
+    context += "- Current mood: #{@personality.mood}\n" if @personality.mood.present?
+    context += "- Relationship status: #{@personality.relationship}\n" if @personality.relationship.present?
+    context += "- Personal description: #{@personality.description}\n" if @personality.description.present?
 
-    context += "\nAdapte ton analyse en tenant compte de ces informations personnelles."
+    context += "\nPlease adapt the analysis considering this personal profile."
     context
   end
 
@@ -121,5 +128,31 @@ class OpenAiService
     else
       "Service d'analyse temporairement indisponible. Veuillez réessayer plus tard."
     end
+  end
+
+  def detect_language(text)
+    prompt = <<~PROMPT.strip
+      What is the language of the following text? Respond only with the ISO 639-1 language code, like "fr", "en", or "es".
+
+      "#{text}"
+    PROMPT
+
+    response = @client.chat(
+      parameters: {
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "user", content: prompt }
+        ],
+        temperature: 0,
+        max_tokens: 5
+      }
+    )
+
+    lang = response.dig("choices", 0, "message", "content")&.strip&.downcase
+    lang.match?(/^[a-z]{2}$/) ? lang : nil
+
+  rescue => e
+    Rails.logger.error "❌ Language detection failed: #{e.message}"
+    nil
   end
 end
