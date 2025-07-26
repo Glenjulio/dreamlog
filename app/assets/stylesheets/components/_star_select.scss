@@ -1,0 +1,20 @@
+.star-select {
+  .star-button {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+      color: #ffd700;
+    }
+
+    &.selected {
+      color: #ffd700; // gold
+      transform: scale(1.15);
+    }
+  }
+}

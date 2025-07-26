@@ -5,17 +5,10 @@
   </div>
 
   <div class="d-flex gap-3 justify-content-center my-4">
-    <% if @transcription.analysis %>
-      <%= link_to 'Analysis', dream_analysis_path(@dream, @transcription.analysis), class: 'gradient-button' %>
-    <% else %>
-      <%= button_to 'Analysis', generate_dream_analyses_path(@dream), method: :post, class: 'gradient-button' %>
-    <% end %>
-
-    <%= link_to 'Edit', edit_dream_transcription_path(@dream), class: 'gradient-button' %>
+    <%= link_to 'Next', edit_dream_transcription_path(@dream), class: 'gradient-button' %>
   </div>
 <% else %>
   <p>No transcription found for this dream.</p>
 <% end %>
 
-<!-- Navbar -->
 <%= render "shared/bottom_nav" %>
