@@ -111,7 +111,14 @@ class DreamsController < ApplicationController
       :tags,
       :private,
       :audio,
-      transcription_attributes: [:content]
+      transcription_attributes: [
+        :id,           # indispensable pour modifier une transcription existante
+        :content,
+        :dream_type,
+        :mood,
+        :tag,
+        :rating
+      ]
     )
   end
 end

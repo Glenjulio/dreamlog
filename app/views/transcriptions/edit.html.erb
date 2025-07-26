@@ -20,29 +20,47 @@
       <h3 class="text-white text-center mb-4">Was it a dream or a nightmare?</h3>
       <div class="d-flex justify-content-center gap-4">
         <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
-          <input type="radio" name="transcription[tag]" value="dream">
+          <input type="radio" name="transcription[dream_type]" value="dream">
           🌙 Dream
         </label>
         <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
-          <input type="radio" name="transcription[tag]" value="nightmare">
-          👻 Nightmare
+          <input type="radio" name="transcription[dream_type]" value="nightmare">
+          😱 Nightmare
         </label>
       </div>
     </div>
 
     <!-- Step 1: Mood -->
-    <div class="d-none" data-step-form-target="step" data-controller="emoji-select">
-      <h3 class="text-white text-center mb-4">What was your mood?</h3>
-      <div class="emoji-select" data-emoji-select-target="emoji">
-        <button type="button" class="gradient-button" data-value="happy" data-emoji-select-target="emoji">😄</button>
-        <button type="button" class="gradient-button" data-value="sad" data-emoji-select-target="emoji">😢</button>
-        <button type="button" class="gradient-button" data-value="angry" data-emoji-select-target="emoji">😡</button>
-        <button type="button" class="gradient-button" data-value="anxious" data-emoji-select-target="emoji">😰</button>
-        <button type="button" class="gradient-button" data-value="calm" data-emoji-select-target="emoji">😌</button>
-        <button type="button" class="gradient-button" data-value="neutral" data-emoji-select-target="emoji">😐</button>
+    <div data-step-form-target="step" data-controller="choice-toggle">
+      <h3 class="text-white text-center mb-4">How did you feel during the dream?</h3>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
+          <input type="radio" name="transcription[mood]" value="happy">
+          😀 Happy
+        </label>
+        <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
+          <input type="radio" name="transcription[mood]" value="sad">
+          😢 Sad
+        </label>
+        <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
+          <input type="radio" name="transcription[mood]" value="anxious">
+          😰 Anxious
+        </label>
+        <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
+          <input type="radio" name="transcription[mood]" value="calm">
+          😌 Calm
+        </label>
+        <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
+          <input type="radio" name="transcription[mood]" value="excited">
+          🤩 Excited
+        </label>
+        <label class="option-button" data-choice-toggle-target="button" data-action="click->choice-toggle#toggle">
+          <input type="radio" name="transcription[mood]" value="angry">
+          😡 Angry
+        </label>
       </div>
-      <input type="hidden" name="transcription[mood]">
     </div>
+
 
     <!-- Step 2: Tags -->
     <div class="d-none" data-step-form-target="step">

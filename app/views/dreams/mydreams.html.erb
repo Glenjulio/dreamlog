@@ -5,39 +5,28 @@
     <h5 class="mb-2"><%= dream.title %></h5>
     <p class="text-muted mb-3"><strong>Visibility:</strong> <%= dream.private ? "Private" : "Public" %></p>
 
-      <% if dream.audio.attached? %>
-        <audio controls>
-          <source src="<%= url_for(dream.audio) %>" type="<%= dream.audio.content_type %>">
-          Your browser does not support the audio element.
-        </audio>
-      <% else %>
-        <p><em>No recording available.</em></p>
-      <% end %>
+    <% if dream.audio.attached? %>
+      <audio controls>
+        <source src="<%= url_for(dream.audio) %>" type="<%= dream.audio.content_type %>">
+        Your browser does not support the audio element.
+      </audio>
+    <% else %>
+      <p><em>No recording available.</em></p>
+    <% end %>
 
     <div class="d-flex flex-wrap gap-2 justify-content-start mt-4">
-      <%= link_to "Modify", edit_dream_path(dream), class: "gradient-button" %>
+      <% if dream.transcription&.analysis.present? %>
+        <%= link_to "👁 See", dream_analysis_path(dream, dream.transcription.analysis), class: "gradient-button" %>
+      <% else %>
+        <%= link_to "👁 See", "#", class: "gradient-button disabled", title: "No analysis yet" %>
+      <% end %>
 
-        <!-- Bouton Transcription conditionnel -->
-        <% if dream.audio.attached? %>
-          <% if dream.transcription.present? %>
-            <%= link_to "Transcription", dream_transcription_path(dream), class: "gradient-button"  %>
-          <% else %>
-            <%= link_to "Transcribe", transcribe_dream_path(dream), method: :post,
-                data: {
-                  confirm: "This will use OpenAI to transcribe your audio. Continue?",
-                  turbo_method: :post
-                },
-                class: "gradient-button" %>
-          <% end %>
-        <% end %>
-
-        <%= link_to "Delete", dream_path(dream), method: :delete,
-            data: {
-              confirm: "Are you sure you want to delete this dream?",
-              turbo_method: :delete
-            },
-            class: "gradient-button" %>
-      </div>
+      <%= link_to "Delete", dream_path(dream), method: :delete,
+          data: {
+            confirm: "Are you sure you want to delete this dream?",
+            turbo_method: :delete
+          },
+          class: "gradient-button" %>
     </div>
   </div>
 <% end %>

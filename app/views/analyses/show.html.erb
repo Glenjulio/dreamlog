@@ -1,13 +1,80 @@
-<h1 class="mb-4">Analysis</h1>
-
 <% if @analysis.present? %>
   <div class="container px-3" style="white-space: pre-wrap; color: white;">
-    <h2 class="h5 mb-3"><%= @dream.title %></h2>
-    <p><%= @analysis.content %></p>
+
+    <!-- Titre du rêve -->
+    <h1 class="mb-4 text-center"><%= @dream.title %></h1>
+
+    <!-- Transcription -->
+    <% if @transcription.content.present? %>
+      <div class="mb-4">
+        <h2>Transcription</h2>
+        <p><%= @transcription.content %></p>
+      </div>
+    <% end %>
+
+    <!-- Résultats du formulaire -->
+    <% if @transcription.dream_type.present? || @transcription.mood.present? || @transcription.tag.present? || @transcription.rating.present? %>
+      <div class="mb-4">
+        <h2>Additional Information</h2>
+        <ul>
+          <% if @transcription.dream_type.present? %>
+            <li>
+              <strong>Type of dream:</strong>
+              <%= @transcription.dream_type == "dream" ? "🌙 Dream" : "😱 Nightmare" %>
+            </li>
+          <% end %>
+
+          <% if @transcription.mood.present? %>
+            <li>
+              <strong>Mood:</strong>
+              <%=
+                case @transcription.mood
+                when "happy" then "😀 Happy"
+                when "sad" then "😢 Sad"
+                when "anxious" then "😰 Anxious"
+                when "calm" then "😌 Calm"
+                when "excited" then "🤩 Excited"
+                when "angry" then "😡 Angry"
+                else @transcription.mood.capitalize
+                end
+              %>
+            </li>
+          <% end %>
+
+          <% if @transcription.tag.present? %>
+            <li><strong>Keywords:</strong> <%= @transcription.tag %></li>
+          <% end %>
+
+          <% if @transcription.rating.present? %>
+            <li><strong>Rating:</strong> <%= @transcription.rating %> / 5</li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Analyse -->
+    <div class="mb-4">
+      <h2>Analysis</h2>
+      <p><%= @analysis.content %></p>
+    </div>
+
+    <!-- Bouton de partage -->
+    <!--
+    <div class="text-center mt-5">
+      <%= button_to "Share this dream", "#" , class: "btn btn-primary", disabled: true %>
+    </div>
+    -->
   </div>
+
 <% else %>
-  <p>No analysis found for this dream.</p>
+  <p class="text-white text-center">No analysis found for this dream.</p>
 <% end %>
+
+<!-- Bouton d'édition -->
+<div class="text-center my-4">
+  <%= link_to "Edit dream", edit_dream_path(@dream), class: "gradient-button" %>
+</div>
+
 
 <!-- Navbar -->
 <%= render "shared/bottom_nav" %>
