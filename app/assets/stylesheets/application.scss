@@ -1,7 +1,7 @@
 @import "components/base";
 @import "components/background";
 @import "components/grid";
-@import "components/typography";
+@import "components/typography_system";
 @import "components/dreamlog_title";
 @import "components/record_button";
 // @import "components/gradient_button";
@@ -19,7 +19,51 @@
 @import "components/dream_header";
 @import "components/buttons_upgrade";
 
+// Override des titres Bootstrap avec nos polices
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+  font-family: var(--font-title) !important;
+  color: var(--white) !important;
+  text-shadow: 0 0 15px var(--text-glow) !important;
+}
+
+// Classes utilitaires pour alternance de polices
+.font-title { font-family: var(--font-title) !important; }
+.font-script { font-family: var(--font-script) !important; }
+.font-body { font-family: var(--font-body) !important; }
+
+// RESPONSIVE TYPOGRAPHY HELPERS
+
+// Classes pour ajuster la taille selon l'écran
+@media (max-width: 768px) {
+  .responsive-title {
+    font-size: 2.5rem !important;
+  }
+
+  .responsive-subtitle {
+    font-size: 1.6rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-title {
+    font-size: 2rem !important;
+  }
+
+  .responsive-subtitle {
+    font-size: 1.3rem !important;
+  }
+}
+
+// CONTENU PRINCIPAL
+
 .main-content {
   padding-bottom: 100px;
-  background-color: rgba(255, 0, 0, 0.1); // temporaire pour test visuel
+  // background-color: rgba(255, 0, 0, 0.1); // Supprimer la couleur de test
+
+  // Styles pour le contenu avec nouvelle typographie
+  p, .text-content {
+    font-family: var(--font-body) !important;
+    line-height: 1.6 !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
 }

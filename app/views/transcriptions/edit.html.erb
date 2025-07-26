@@ -1,10 +1,6 @@
 <div class="container my-5">
   <h2 class="mb-4 text-center"><%= @dream.title %></h2>
 
-  <p class="text-white mb-4 text-center">
-    Help us understand your dream better. All fields are optional.
-  </p>
-
   <%= simple_form_for [@dream, @transcription],
       url: dream_transcription_path(@dream),
       method: :patch,

@@ -1,0 +1,201 @@
+// TYPOGRAPHIQUE
+
+:root {
+  --font-title: 'Creepster', cursive;
+  --font-script: 'Comfortaa', cursive;
+  --font-body: 'Inter', sans-serif;
+  --primary-blue: #6366F1;
+  --primary-cyan: #00fff7;
+  --pink-accent: #e94560;
+  --white: #ffffff;
+  --text-glow: rgba(0, 255, 247, 0.5);
+}
+
+// HIÉRARCHIE TYPOGRAPHIQUE H1 - H6
+
+// H1 - Titre principal de l'app (Great Vibes)
+h1, .h1, .dreamlog-title {
+  font-family: var(--font-title) !important;
+  font-size: 4rem !important;
+  font-weight: 900 !important;
+  color: var(--white) !important;
+  text-shadow: 0 0 20px var(--text-glow) !important;
+  animation: glow 3s ease-in-out infinite alternate !important;
+  margin-bottom: 2rem !important;
+  line-height: 1.2 !important;
+
+  @media (max-width: 768px) {
+    font-size: 3rem !important;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2.5rem !important;
+  }
+}
+
+// H2 - Sous-titres principaux (Dancing Script)
+h2, .h2, .subtitle {
+  font-family: var(--font-script) !important;
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 500 !important;
+  margin-bottom: 1.5rem !important;
+  text-shadow: 0 0 10px rgba(0, 255, 247, 0.3) !important;
+
+  @media (max-width: 768px) {
+    font-size: 1.8rem !important;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem !important;
+  }
+}
+
+// H3 - Titres de section
+h3, .h3 {
+  font-family: var(--font-title) !important;
+  font-size: 2rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin-bottom: 1.2rem !important;
+  text-shadow: 0 0 8px rgba(0, 255, 247, 0.2) !important;
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem !important;
+  }
+}
+
+// H4 - Sous-titres de section
+h4, .h4 {
+  font-family: var(--font-script) !important;
+  font-size: 1.6rem !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 500 !important;
+  margin-bottom: 1rem !important;
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem !important;
+  }
+}
+
+// H5 - Petits titres
+h5, .h5 {
+  font-family: var(--font-body) !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  margin-bottom: 0.8rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem !important;
+  }
+}
+
+// H6 - Micro-titres
+h6, .h6 {
+  font-family: var(--font-body) !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  margin-bottom: 0.6rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+}
+
+// CLASSES SPÉCIALES POUR TITRES SPÉCIFIQUES
+
+// Titre de page (utilisé dans les vues)
+.page-title {
+  font-family: var(--font-title) !important;
+  font-size: 3rem !important;
+  color: var(--white) !important;
+  text-shadow: 0 0 15px var(--text-glow) !important;
+  text-align: center !important;
+  margin-bottom: 2rem !important;
+
+  @media (max-width: 768px) {
+    font-size: 2.2rem !important;
+  }
+}
+
+// Titre de formulaire
+.form-title {
+  font-family: var(--font-script) !important;
+  font-size: 2rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-align: center !important;
+  margin-bottom: 1.5rem !important;
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem !important;
+  }
+}
+
+// Titre de section dans les cartes
+.card-title {
+  font-family: var(--font-script) !important;
+  font-size: 1.5rem !important;
+  color: var(--white) !important;
+  margin-bottom: 1rem !important;
+}
+
+// Titre pour la navigation
+.nav-title {
+  font-family: var(--font-title) !important;
+  font-size: 1.8rem !important;
+  color: var(--primary-cyan) !important;
+  text-shadow: 0 0 10px rgba(0, 255, 247, 0.4) !important;
+}
+
+// ANIMATION POUR LES TITRES
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
+  }
+  to {
+    text-shadow:
+      0 0 30px rgba(0, 255, 247, 0.8),
+      0 0 40px rgba(0, 255, 247, 0.3);
+  }
+}
+
+// Classe pour appliquer l'effet glow sur demand
+.text-glow {
+  animation: glow 3s ease-in-out infinite alternate !important;
+}
+
+// TEXTE CORPOREL ET PARAGRAPHES
+
+body, p, .text-body {
+  font-family: var(--font-body) !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+// Texte d'introduction/description
+.lead-text {
+  font-family: var(--font-script) !important;
+  font-size: 1.2rem !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 400 !important;
+}
+
+// RESPONSIVE DESIGN POUR TOUS LES TITRES
+
+@media (max-width: 576px) {
+  h1, .h1, .dreamlog-title {
+    font-size: 2rem !important;
+  }
+
+  h2, .h2, .subtitle {
+    font-size: 1.4rem !important;
+  }
+
+  .page-title {
+    font-size: 1.8rem !important;
+  }
+}
