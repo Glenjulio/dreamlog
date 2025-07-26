@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_20_163940) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_26_121146) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,6 +59,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_20_163940) do
     t.datetime "updated_at", null: false
     t.string "tags"
     t.boolean "private"
+    t.text "transcription"
     t.index ["created_at"], name: "index_dreams_on_created_at"
     t.index ["private"], name: "index_dreams_on_private"
     t.index ["user_id"], name: "index_dreams_on_user_id"
@@ -85,6 +86,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_20_163940) do
     t.integer "rating"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "keywords"
+    t.string "dream_type"
     t.index ["created_at"], name: "index_transcriptions_on_created_at"
     t.index ["dream_id"], name: "index_transcriptions_on_dream_id"
   end

@@ -7,4 +7,5 @@ class Transcription < ApplicationRecord
   validates :mood, length: { maximum: 50 }, allow_blank: true
   validates :tag, length: { maximum: 100 }, allow_blank: true
   validates :rating, numericality: { in: 1..10 }, allow_nil: true
+  validates :dream_type, inclusion: { in: %w[dream nightmare] }, allow_blank: true
 end

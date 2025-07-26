@@ -4,7 +4,13 @@ class AnalysesController < ApplicationController
 
   def show
     @analysis = Analysis.find(params[:id])
-    redirect_to mydreams_path, alert: "Analysis not found" unless @analysis
+    @transcription = @analysis.transcription
+    @dream = @transcription.dream
+
+    unless @dream == Dream.find(params[:dream_id])
+      redirect_to mydreams_path, alert: "Analysis does not belong to this dream"
+      return
+    end
   end
 
   def generate

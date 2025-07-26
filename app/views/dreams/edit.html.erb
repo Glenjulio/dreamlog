@@ -1,3 +1,5 @@
+<% @hide_bottom_nav = true %>
+
 <h1 class="mb-4">Edit your dream</h1>
 
 <%= form_with model: @dream, local: true do |form| %>
@@ -16,18 +18,58 @@
     <%= form.check_box :private %>
   </div>
 
-  <div>
+  <div class="mt-4">
     <%= form.fields_for :transcription do |t| %>
+
       <%= t.label :content, "Manual transcription (optional)" %><br>
       <%= t.text_area :content, rows: 10, placeholder: "Edit the transcription of your dream..." %>
+
+      <div class="mt-4">
+        <%= t.label :dream_type, "Type of dream" %><br>
+        <%= t.radio_button :dream_type, "dream" %>
+        <%= t.label :dream_type_dream, "🌙 Dream" %>
+        <%= t.radio_button :dream_type, "nightmare" %>
+        <%= t.label :dream_type_nightmare, "😱 Nightmare" %>
+      </div>
+
+      <div class="mt-3">
+        <%= t.label :mood, "Mood during the dream" %><br>
+        <%= t.radio_button :mood, "happy" %>
+        😀 Happy
+        <%= t.radio_button :mood, "sad" %>
+        😢 Sad
+        <%= t.radio_button :mood, "anxious" %>
+        😰 Anxious
+        <%= t.radio_button :mood, "calm" %>
+        😌 Calm
+        <%= t.radio_button :mood, "excited" %>
+        🤩 Excited
+        <%= t.radio_button :mood, "angry" %>
+        😡 Angry
+      </div>
+
+      <div class="mt-3">
+        <%= t.label :tag, "Keywords (comma-separated)" %>
+        <%= t.text_field :tag %>
+      </div>
+
+      <div class="mt-3">
+        <%= t.label :rating, "Rating (1–5)" %>
+        <%= t.number_field :rating, in: 1..5, step: 1 %>
+      </div>
+
     <% end %>
   </div>
 
-  <!-- Ajout du bouton pour accéder à la transcription -->
-  <div class="d-flex gap-3 mt-4">
-    <%= link_to "View/Edit Transcription", dream_transcription_path(@dream), class: "gradient-button" %>
+  <div class="mt-4 text-center">
     <%= form.submit "Save Changes", class: "gradient-button" %>
   </div>
 <% end %>
 
-<%= render "shared/bottom_nav" %>
+<!-- Boutons de navigation -->
+<div class="text-center mt-1 mb-10 d-flex justify-content-center gap-4 flex-wrap">
+  <% if @dream.transcription&.analysis.present? %>
+    <%= link_to "⬅️ Back to dream", dream_analysis_path(@dream, @dream.transcription.analysis), class: "gradient-button" %>
+  <% end %>
+  <%= link_to "📋 List", mydreams_path, class: "gradient-button" %>
+</div>

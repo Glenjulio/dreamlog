@@ -44,6 +44,6 @@ class TranscriptionsController < ApplicationController
   end
 
   def transcription_params
-    params.require(:transcription).permit(:content, :mood, :tag, :rating)
+    params.require(:transcription).permit(:content, :tag, :mood, :dream_type, :rating)
   end
 end
