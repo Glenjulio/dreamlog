@@ -1,0 +1,50 @@
+<!-- app/views/shared/_analysis_loader.html.erb -->
+<div class="analysis-loader-overlay"
+    data-controller="analysis-loader"
+    data-analysis-loader-target="overlay">
+
+  <!-- Symboles flottants -->
+  <div class="floating-symbols">
+    <div class="symbol">🧠</div>
+    <div class="symbol">💭</div>
+    <div class="symbol">✨</div>
+    <div class="symbol">🌙</div>
+  </div>
+
+  <div class="analysis-loader-content">
+    <!-- Titre animé -->
+    <h2 class="analysis-title" data-analysis-loader-target="title">
+      Analyzing your dream...
+    </h2>
+
+    <!-- Spinner principal -->
+    <div class="analysis-spinner">
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-center">🔮</div>
+    </div>
+
+    <!-- Message qui change -->
+    <div class="analysis-message" data-analysis-loader-target="message">
+      Interpreting symbols and emotions...
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="analysis-progress"></div>
+
+    <!-- Points qui rebondissent -->
+    <div class="analysis-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <!-- Messages encourageants -->
+    <div class="mt-3" style="font-size: 0.9rem; opacity: 0.7;"
+        data-analysis-loader-target="encouragement">
+      This may take a few moments...
+    </div>
+  </div>
+</div>
