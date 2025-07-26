@@ -1,11 +1,8 @@
-// =============================================================================
-// REFONTE TYPOGRAPHIQUE COMPLÈTE - DREAMLOG
-// À ajouter dans app/assets/stylesheets/components/_typography_system.scss
-// =============================================================================
+// TYPOGRAPHIQUE
 
 :root {
-  --font-title: 'Great Vibes', cursive;
-  --font-script: 'Dancing Script', cursive;
+  --font-title: 'Creepster', cursive;
+  --font-script: 'Comfortaa', cursive;
   --font-body: 'Inter', sans-serif;
   --primary-blue: #6366F1;
   --primary-cyan: #00fff7;
@@ -14,9 +11,7 @@
   --text-glow: rgba(0, 255, 247, 0.5);
 }
 
-// =============================================================================
 // HIÉRARCHIE TYPOGRAPHIQUE H1 - H6
-// =============================================================================
 
 // H1 - Titre principal de l'app (Great Vibes)
 h1, .h1, .dreamlog-title {
@@ -55,7 +50,7 @@ h2, .h2, .subtitle {
   }
 }
 
-// H3 - Titres de section (Great Vibes plus petit)
+// H3 - Titres de section
 h3, .h3 {
   font-family: var(--font-title) !important;
   font-size: 2rem !important;
@@ -68,7 +63,7 @@ h3, .h3 {
   }
 }
 
-// H4 - Sous-titres de section (Dancing Script)
+// H4 - Sous-titres de section
 h4, .h4 {
   font-family: var(--font-script) !important;
   font-size: 1.6rem !important;
@@ -81,7 +76,7 @@ h4, .h4 {
   }
 }
 
-// H5 - Petits titres (Inter bold)
+// H5 - Petits titres
 h5, .h5 {
   font-family: var(--font-body) !important;
   font-size: 1.3rem !important;
@@ -96,7 +91,7 @@ h5, .h5 {
   }
 }
 
-// H6 - Micro-titres (Inter medium)
+// H6 - Micro-titres
 h6, .h6 {
   font-family: var(--font-body) !important;
   font-size: 1.1rem !important;
@@ -107,9 +102,7 @@ h6, .h6 {
   letter-spacing: 0.3px !important;
 }
 
-// =============================================================================
 // CLASSES SPÉCIALES POUR TITRES SPÉCIFIQUES
-// =============================================================================
 
 // Titre de page (utilisé dans les vues)
 .page-title {
@@ -154,9 +147,7 @@ h6, .h6 {
   text-shadow: 0 0 10px rgba(0, 255, 247, 0.4) !important;
 }
 
-// =============================================================================
-// ANIMATION GLOW POUR LES TITRES
-// =============================================================================
+// ANIMATION POUR LES TITRES
 
 @keyframes glow {
   from {
@@ -174,9 +165,7 @@ h6, .h6 {
   animation: glow 3s ease-in-out infinite alternate !important;
 }
 
-// =============================================================================
 // TEXTE CORPOREL ET PARAGRAPHES
-// =============================================================================
 
 body, p, .text-body {
   font-family: var(--font-body) !important;
@@ -193,9 +182,7 @@ body, p, .text-body {
   font-weight: 400 !important;
 }
 
-// =============================================================================
 // RESPONSIVE DESIGN POUR TOUS LES TITRES
-// =============================================================================
 
 @media (max-width: 576px) {
   h1, .h1, .dreamlog-title {
