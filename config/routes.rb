@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     resources :analyses, only: [:show, :create] do
       collection do
         post :generate, to: 'analyses#generate'
+        get :generate, to: 'analyses#generate'  # <- nécessaire pour redirect_to après update
       end
     end
   end

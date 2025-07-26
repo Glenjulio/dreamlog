@@ -29,3 +29,53 @@
     box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.4);
   }
 }
+
+.gradient-button.selected {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(225, 117, 211, 0.6);
+  transform: translateY(-2px);
+  background-image: linear-gradient(45deg, #E175D3, #9B3BBF, #A87CDB);
+  border: 1px solid white;
+}
+
+.option-button {
+  @extend .gradient-button;
+  padding: 12px 24px;
+  cursor: pointer;
+  user-select: none;
+
+  &.active {
+    box-shadow: 0 0 0 3px rgba(225, 117, 211, 0.4);
+    transform: translateY(-1px);
+  }
+
+  input {
+    display: none;
+  }
+}
+
+.emoji-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+
+  .gradient-button {
+    font-size: 2.5rem;
+    padding: 1rem 1.2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    color: white;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &.selected {
+      background: linear-gradient(45deg, #E175D3 0%, #9B3BBF 50%, #A87CDB 100%);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+      transform: scale(1.15);
+    }
+  }
+}

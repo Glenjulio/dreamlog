@@ -1,0 +1,54 @@
+.emoji-select {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  button {
+    font-size: 2rem;
+    padding: 10px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    &.selected {
+      border-color: #E175D3;
+      background: rgba(225, 117, 211, 0.2);
+      box-shadow: 0 0 10px rgba(225, 117, 211, 0.3);
+    }
+  }
+}
+
+.emoji-select {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+
+  div {
+    font-size: 3rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 50%;
+    padding: 0.5rem;
+    user-select: none;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+
+    &.selected {
+      background: linear-gradient(45deg, #E175D3 0%, #9B3BBF 50%, #A87CDB 100%);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+      transform: scale(1.3);
+    }
+  }
+}

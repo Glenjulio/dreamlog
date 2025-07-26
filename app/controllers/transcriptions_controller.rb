@@ -25,8 +25,8 @@ class TranscriptionsController < ApplicationController
 
   def update
     if @transcription.update(transcription_params)
-      redirect_to dream_transcription_path(@dream),
-                  notice: "Transcription updated successfully!"
+      # Redirection directe vers l'analyse
+      redirect_to generate_dream_analyses_path(@dream)
     else
       flash.now[:alert] = "Please correct the errors below."
       render :edit, status: :unprocessable_entity
