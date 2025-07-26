@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 
 export default class extends Controller {
-  static targets = ["button", "playButton", "deleteButton", "saveButton", "timer"]
+  static targets = ["button", "deleteButton", "saveButton", "timer"]
 
   connect() {
     this.recording = false
@@ -17,6 +17,12 @@ export default class extends Controller {
   }
 
   toggle() {
+    // Si on est en train d’écouter → revenir au mode enregistrement
+    if (!this.recording && this.audioElement && !this.isPlaying) {
+      this.resetToRecordingButton()
+      return
+    }
+
     this.recording = !this.recording
 
     if (this.recording) {
@@ -26,7 +32,12 @@ export default class extends Controller {
     }
   }
 
-  // fonctions chrono
+  resetToRecordingButton() {
+    this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
+    this.buttonTarget.title = "Start recording"
+    this.buttonTarget.dataset.action = "click->recordings#toggle"
+  }
+
   startTimer() {
     this.elapsedSeconds = 0
     this.updateTimerDisplay()
@@ -66,8 +77,6 @@ export default class extends Controller {
           this.audioBlob = new Blob(this.audioChunks, { type: "audio/webm" })
           this.audioUrl = URL.createObjectURL(this.audioBlob)
           this.setupAudioElement()
-          // ACTIVER le bouton Play ET montrer les boutons de décision
-          this.enablePlayButton()
           this.showDecisionButtons()
           this.stopTimer()
           console.log("Timer stopped after recording")
@@ -93,7 +102,9 @@ export default class extends Controller {
   stopRecording() {
     if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
       this.mediaRecorder.stop()
-      this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
+      this.buttonTarget.innerHTML = '<i class="fas fa-play fa-2x"></i>'
+      this.buttonTarget.title = "Listen to your recording"
+      this.buttonTarget.dataset.action = "click->recordings#togglePlayback"
     }
   }
 
@@ -102,53 +113,47 @@ export default class extends Controller {
       this.audioElement = new Audio(this.audioUrl)
       this.audioElement.addEventListener('ended', () => {
         this.isPlaying = false
-        this.updatePlayButton()
+        this.updatePlayIcon()
       })
     }
   }
 
-  // Montrer le bouton Play mais désactivé (pendant enregistrement)
-  showPlayButtonDisabled() {
-    this.playButtonTarget.classList.remove("d-none")
-    this.playButtonTarget.disabled = true
-    this.playButtonTarget.classList.add("disabled")
-    this.playButtonTarget.innerHTML = '<i class="fas fa-play"></i>'
-    this.playButtonTarget.title = "Recording in progress..."
+  togglePlayback() {
+    if (!this.audioElement) return
+
+    if (this.isPlaying) {
+      this.audioElement.pause()
+      this.isPlaying = false
+    } else {
+      this.audioElement.play()
+      this.isPlaying = true
+    }
+    this.updatePlayIcon()
   }
 
-  // Activer le bouton Play (après enregistrement)
-  enablePlayButton() {
-    this.playButtonTarget.disabled = false
-    this.playButtonTarget.classList.remove("disabled")
-    this.playButtonTarget.title = "Listen to recording"
-    this.updatePlayButton()
+  updatePlayIcon() {
+    const icon = this.isPlaying ? 'fa-pause' : 'fa-play'
+    this.buttonTarget.innerHTML = `<i class="fas ${icon} fa-2x"></i>`
   }
 
-  // Montrer les boutons de décision
   showDecisionButtons() {
     if (this.hasDeleteButtonTarget) {
-      this.deleteButtonTarget.classList.remove("d-none");
+      this.deleteButtonTarget.classList.remove("d-none")
     }
 
     if (this.hasSaveButtonTarget) {
-      this.saveButtonTarget.classList.remove("d-none");
+      this.saveButtonTarget.classList.remove("d-none")
     }
   }
 
-  // Cacher tous les boutons
   hideAllButtons() {
-    this.playButtonTarget.classList.add("d-none")
-
     if (this.hasDeleteButtonTarget) {
-    this.deleteButtonTarget.classList.add("d-none")
+      this.deleteButtonTarget.classList.add("d-none")
     }
 
     if (this.hasSaveButtonTarget) {
       this.saveButtonTarget.classList.add("d-none")
     }
-
-    this.playButtonTarget.disabled = false
-    this.playButtonTarget.classList.remove("disabled")
   }
 
   togglePlayback() {
@@ -311,7 +316,6 @@ export default class extends Controller {
 
     console.log("Using fallback prompt, starting save process...")
 
-    // Le reste de la logique reste identique
     this.showLoadingState("Saving in progress...")
 
     const file = new File([this.audioBlob], "recording.webm", {
@@ -337,8 +341,6 @@ export default class extends Controller {
         }
       }
 
-      // PUIS faire le fetch avec .json
-
       fetch("/dreams.json", {
         method: "POST",
         headers: {
@@ -361,7 +363,6 @@ export default class extends Controller {
           const dreamId = data.id
           this.showCustomNotification("Dream saved, transcribing...", "info")
 
-          // Redirection vers transcription automatique également dans le fallback
           fetch(`/dreams/${dreamId}/transcribe`, {
             method: "POST",
             headers: {
@@ -393,7 +394,6 @@ export default class extends Controller {
     })
   }
 
-  // FONCTION DIRECTE : Supprimer (appelée par le bouton)
   discardRecording() {
     this.cleanupRecording()
     this.showCustomNotification("Recording deleted!", "info")
@@ -410,9 +410,8 @@ export default class extends Controller {
     this.isPlaying = false
     this.updateTimerDisplay()
 
-    // Cacher tous les boutons
     this.hideAllButtons()
-    this.buttonTarget.innerHTML = '<i class="fa-solid fa-microphone-lines fa-2x"></i>'
+    this.resetToRecordingButton()
   }
 
   showLoadingState(message) {
@@ -456,7 +455,6 @@ export default class extends Controller {
   }
 
   showCustomNotification(message, type) {
-    // Créer la notification directement dans le DOM
     const container = document.querySelector('[data-notifications-target="container"]')
     if (!container) return
 
@@ -480,14 +478,8 @@ export default class extends Controller {
     `
 
     container.appendChild(notification)
-    // Animation d'entrée
     setTimeout(() => notification.classList.add('show'), 10)
-
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.remove()
-      }
-    }, 5000)
+    setTimeout(() => notification.remove(), 5000)
   }
 
   getNotificationIcon(type) {
