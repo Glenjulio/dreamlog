@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 
 export default class extends Controller {
-  static targets = ["button", "deleteButton", "saveButton", "timer"]
+  static targets = ["button", "deleteButton", "saveButton", "timer", "playButton"]
 
   connect() {
     this.recording = false
@@ -17,7 +17,6 @@ export default class extends Controller {
   }
 
   toggle() {
-    // Si on est en train d’écouter → revenir au mode enregistrement
     if (!this.recording && this.audioElement && !this.isPlaying) {
       this.resetToRecordingButton()
       return
@@ -64,7 +63,6 @@ export default class extends Controller {
         this.audioChunks = []
         this.mediaRecorder = new MediaRecorder(stream)
 
-        // MONTRER le bouton Play immédiatement (mais désactivé)
         this.showPlayButtonDisabled()
 
         this.mediaRecorder.ondataavailable = event => {
@@ -93,9 +91,9 @@ export default class extends Controller {
       .catch(error => {
         console.error("Microphone access error:", error)
         this.recording = false
-        this.buttonTarget.textContent = "Record"
         this.hideAllButtons()
         this.showErrorMessage(error)
+        this.resetToRecordingButton()
       })
   }
 
@@ -113,12 +111,13 @@ export default class extends Controller {
       this.audioElement = new Audio(this.audioUrl)
       this.audioElement.addEventListener('ended', () => {
         this.isPlaying = false
-        this.updatePlayIcon()
+        this.updatePlayButton()
       })
     }
   }
 
   togglePlayback() {
+    if (this.hasPlayButtonTarget && this.playButtonTarget.disabled) return
     if (!this.audioElement) return
 
     if (this.isPlaying) {
@@ -128,12 +127,23 @@ export default class extends Controller {
       this.audioElement.play()
       this.isPlaying = true
     }
-    this.updatePlayIcon()
+
+    this.updatePlayButton()
   }
 
-  updatePlayIcon() {
+  updatePlayButton() {
     const icon = this.isPlaying ? 'fa-pause' : 'fa-play'
-    this.buttonTarget.innerHTML = `<i class="fas ${icon} fa-2x"></i>`
+    if (this.hasPlayButtonTarget) {
+      this.playButtonTarget.innerHTML = `<i class="fas ${icon}"></i>`
+    } else {
+      this.buttonTarget.innerHTML = `<i class="fas ${icon} fa-2x"></i>`
+    }
+  }
+
+  showPlayButtonDisabled() {
+    if (this.hasPlayButtonTarget) {
+      this.playButtonTarget.disabled = true
+    }
   }
 
   showDecisionButtons() {
@@ -156,41 +166,14 @@ export default class extends Controller {
     }
   }
 
-  togglePlayback() {
-    // Ne rien faire si désactivé
-    if (this.playButtonTarget.disabled) return
-    if (!this.audioElement) return
-
-    if (this.isPlaying) {
-      this.audioElement.pause()
-      this.isPlaying = false
-    } else {
-      this.audioElement.play()
-      this.isPlaying = true
-    }
-    this.updatePlayButton()
-  }
-
-  updatePlayButton() {
-    const icon = this.isPlaying ? 'fa-pause' : 'fa-play'
-    this.playButtonTarget.innerHTML = `<i class="fas ${icon}"></i>`
-  }
-
-  // NOUVELLE FONCTION : Utiliser le modal custom au lieu de window.prompt
   async saveAndTranscribe() {
     try {
-      // Récupérer le controller du modal
       const modalElement = document.querySelector('[data-controller~="modal"]')
-      if (!modalElement) {
-        throw new Error('Modal not found')
-      }
+      if (!modalElement) throw new Error('Modal not found')
 
       const modalController = this.application.getControllerForElementAndIdentifier(modalElement, 'modal')
-      if (!modalController) {
-        throw new Error('Modal controller not found')
-      }
+      if (!modalController) throw new Error('Modal controller not found')
 
-      // Afficher le modal et attendre la réponse
       const title = await modalController.show({
         title: "Save Your Dream",
         placeholder: "Give your dream a memorable title...",
@@ -198,17 +181,9 @@ export default class extends Controller {
         cancelText: "Cancel"
       })
 
-      console.log("Title received from modal:", title)
-
-      // Continuer avec la logique de sauvegarde
       this.showLoadingState("Saving in progress...")
 
-      const file = new File([this.audioBlob], "recording.webm", {
-        type: "audio/webm"
-      })
-
-      console.log("File created:", file)
-
+      const file = new File([this.audioBlob], "recording.webm", { type: "audio/webm" })
       const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
 
       upload.create((error, blob) => {
@@ -219,9 +194,6 @@ export default class extends Controller {
           return
         }
 
-        console.log("Direct upload successful:", blob)
-        console.log("Now creating dream...")
-
         const dreamData = {
           dream: {
             title: title,
@@ -230,8 +202,6 @@ export default class extends Controller {
             audio: blob.signed_id
           }
         }
-
-        console.log("Sending dream data:", dreamData)
 
         fetch("/dreams.json", {
           method: "POST",
@@ -243,24 +213,15 @@ export default class extends Controller {
           body: JSON.stringify(dreamData)
         })
         .then(response => {
-          console.log("Response status:", response.status)
-          console.log("Response headers:", response.headers)
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-          }
-
+          if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`)
           return response.json()
         })
         .then(data => {
-          console.log("Dream created successfully:", data)
           this.hideLoadingState()
-
           if (data.success) {
             const dreamId = data.id
             this.showCustomNotification("Dream saved, transcribing...", "info")
 
-            // Redirection vers transcription automatique après sauvegarde
             fetch(`/dreams/${dreamId}/transcribe`, {
               method: "POST",
               headers: {
@@ -272,14 +233,12 @@ export default class extends Controller {
                 window.location.href = resp.url
               } else {
                 this.showCustomNotification("Transcription completed", "success")
-                // Rediriger vers la page de transcription
                 window.location.href = `/dreams/${dreamId}/transcription`
               }
             })
             .catch(error => {
               console.error("Transcription failed:", error)
               this.showCustomNotification("Error during transcription", "error")
-              // En cas d'erreur, rediriger vers la page du rêve
               window.location.href = `/dreams/${dreamId}`
             })
           } else {
@@ -287,26 +246,19 @@ export default class extends Controller {
           }
         })
         .catch(error => {
-          console.error("Error during save:", error)
           this.hideLoadingState()
           this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
         })
       })
-
     } catch (error) {
-      console.log("Modal cancelled or error:", error.message)
-
-      // Si l'utilisateur a annulé, on ne fait rien
       if (error.message === 'User cancelled') {
         this.showCustomNotification("Save cancelled", "info")
       } else {
-        // Fallback vers le prompt natif en cas d'erreur
         this.saveAndTranscribeWithFallback()
       }
     }
   }
 
-  // Fonction de fallback si le modal ne fonctionne pas
   saveAndTranscribeWithFallback() {
     const title = window.prompt("Give a title to your dream:")
     if (!title?.trim()) {
@@ -314,19 +266,13 @@ export default class extends Controller {
       return
     }
 
-    console.log("Using fallback prompt, starting save process...")
-
     this.showLoadingState("Saving in progress...")
 
-    const file = new File([this.audioBlob], "recording.webm", {
-      type: "audio/webm"
-    })
-
+    const file = new File([this.audioBlob], "recording.webm", { type: "audio/webm" })
     const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
 
     upload.create((error, blob) => {
       if (error) {
-        console.error("Direct upload failed:", error)
         this.hideLoadingState()
         this.showCustomNotification("Error during uploading. Try again.", "error")
         return
@@ -351,14 +297,11 @@ export default class extends Controller {
         body: JSON.stringify(dreamData)
       })
       .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         return response.json()
       })
       .then(data => {
         this.hideLoadingState()
-
         if (data.success) {
           const dreamId = data.id
           this.showCustomNotification("Dream saved, transcribing...", "info")
@@ -378,7 +321,6 @@ export default class extends Controller {
             }
           })
           .catch(error => {
-            console.error("Transcription failed:", error)
             this.showCustomNotification("Error during transcription", "error")
             window.location.href = `/dreams/${dreamId}`
           })
@@ -387,7 +329,6 @@ export default class extends Controller {
         }
       })
       .catch(error => {
-        console.error("Error during save:", error)
         this.hideLoadingState()
         this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
       })
@@ -400,16 +341,13 @@ export default class extends Controller {
   }
 
   cleanupRecording() {
-    if (this.audioUrl) {
-      URL.revokeObjectURL(this.audioUrl)
-    }
+    if (this.audioUrl) URL.revokeObjectURL(this.audioUrl)
 
     this.audioBlob = null
     this.audioUrl = null
     this.audioElement = null
     this.isPlaying = false
     this.updateTimerDisplay()
-
     this.hideAllButtons()
     this.resetToRecordingButton()
   }
@@ -483,7 +421,7 @@ export default class extends Controller {
   }
 
   getNotificationIcon(type) {
-    switch(type) {
+    switch (type) {
       case 'success': return 'fa-check-circle'
       case 'error': return 'fa-exclamation-circle'
       case 'warning': return 'fa-exclamation-triangle'
