@@ -1,0 +1,29 @@
+// Dream header styling with floating cloud animation - BLUE THEME
+.dream-header {
+  .dream-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+
+    svg {
+      color: #00fff7; // Bleu cyan cohérent avec votre thème !
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(0, 255, 247, 0.3));
+    }
+
+    // Décaler légèrement l'animation du second nuage
+    svg:last-child {
+      animation-delay: 1.5s;
+    }
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
