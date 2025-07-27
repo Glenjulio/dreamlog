@@ -16,14 +16,9 @@
     <% end %>
 
     <!-- Chat Bot Icon - Nouvelle icône ajoutée -->
-    <div data-controller="chat">
-      <%= link_to "#", class: "nav-chat-button", data: {
-        action: "click->chat#toggle",
-        chat_target: "button"
-      } do %>
-        <i class="fas fa-comments fa-2x text-white"></i>
-      <% end %>
-    </div>
+    <%= link_to chat_path, class: "nav-chat-button" do %>
+      <i class="fas fa-comments fa-2x text-white"></i>
+    <% end %>
 
     <% if user_signed_in? %>
       <%= link_to edit_user_registration_path do %>
