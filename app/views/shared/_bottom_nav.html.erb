@@ -1,3 +1,4 @@
+
 <nav class="w-100" style="position: fixed; bottom: 0; left: 0; right: 0; background: transparent; z-index: 10;">
   <div class="container-fluid py-2 d-flex justify-content-center align-items-center gap-5">
     <%= link_to mydreams_path do %>
@@ -13,6 +14,11 @@
       <%= link_to root_path, class: "nav-plus-button" do %>
         <i class="fas fa-plus"></i>
       <% end %>
+    <% end %>
+
+    <!-- Chat Bot Icon - Nouvelle icône ajoutée -->
+    <%= link_to "#", class: "nav-chat-button", data: { action: "click->chat#toggle" } do %>
+      <i class="fas fa-comments fa-2x text-white"></i>
     <% end %>
 
     <% if user_signed_in? %>
