@@ -19,4 +19,7 @@ class PagesController < ApplicationController
 
   def past_recording
   end
+
+  def chat
+  end
 end
