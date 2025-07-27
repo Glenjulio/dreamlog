@@ -6,9 +6,33 @@ class DreamsController < ApplicationController
     @dreams = current_user.dreams.order(created_at: :desc)
   end
 
-  def index
-    @dreams = Dream.where(private: false).order(created_at: :desc)
+def index
+  @dreams = Dream.where(private: [false, nil]).includes(:user, :transcription)
+
+  # Search in title, tags AND transcription content
+  if params[:search].present?
+    search_term = "%#{params[:search]}%"
+    @dreams = @dreams.joins(:transcription).where(
+      "dreams.title ILIKE ? OR dreams.tags ILIKE ? OR transcriptions.content ILIKE ?",
+      search_term, search_term, search_term
+    )
   end
+
+  # Filter by specific tag
+  if params[:tag].present?
+    @dreams = @dreams.where("tags ILIKE ?", "%#{params[:tag]}%")
+  end
+
+  @dreams = @dreams.order(created_at: :desc)
+
+  # Get all unique tags for dropdown
+  @available_tags = Dream.where(private: [false, nil])
+                        .where.not(tags: [nil, ''])
+                        .pluck(:tags)
+                        .flat_map { |tags| tags.split(',').map(&:strip) }
+                        .uniq
+                        .sort
+end
 
   def new
     @dream = Dream.new

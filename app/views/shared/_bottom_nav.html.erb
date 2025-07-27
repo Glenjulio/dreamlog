@@ -4,6 +4,11 @@
       <i class="fas fa-list fa-2x text-white"></i>
     <% end %>
 
+    <!-- Public Dreams link - visible for everyone -->
+    <%= link_to dreams_path do %>
+      <i class="fas fa-users fa-2x text-white"></i>
+    <% end %>
+
     <% unless current_page?(root_path) %>
       <%= link_to root_path, class: "nav-plus-button" do %>
         <i class="fas fa-plus"></i>
