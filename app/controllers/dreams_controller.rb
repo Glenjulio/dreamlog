@@ -2,37 +2,36 @@ class DreamsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_dream, only: [:show, :edit, :update, :destroy, :transcribe]
 
+  protect_from_forgery except: :upload_audio
+
   def mydreams
     @dreams = current_user.dreams.order(created_at: :desc)
   end
 
-def index
-  @dreams = Dream.where(private: [false, nil]).includes(:user, :transcription)
+  def index
+    @dreams = Dream.where(private: [false, nil]).includes(:user, :transcription)
 
-  # Search in title, tags AND transcription content
-  if params[:search].present?
-    search_term = "%#{params[:search]}%"
-    @dreams = @dreams.joins(:transcription).where(
-      "dreams.title ILIKE ? OR dreams.tags ILIKE ? OR transcriptions.content ILIKE ?",
-      search_term, search_term, search_term
-    )
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      @dreams = @dreams.joins(:transcription).where(
+        "dreams.title ILIKE ? OR dreams.tags ILIKE ? OR transcriptions.content ILIKE ?",
+        search_term, search_term, search_term
+      )
+    end
+
+    if params[:tag].present?
+      @dreams = @dreams.where("tags ILIKE ?", "%#{params[:tag]}%")
+    end
+
+    @dreams = @dreams.order(created_at: :desc)
+
+    @available_tags = Dream.where(private: [false, nil])
+                          .where.not(tags: [nil, ''])
+                          .pluck(:tags)
+                          .flat_map { |tags| tags.split(',').map(&:strip) }
+                          .uniq
+                          .sort
   end
-
-  # Filter by specific tag
-  if params[:tag].present?
-    @dreams = @dreams.where("tags ILIKE ?", "%#{params[:tag]}%")
-  end
-
-  @dreams = @dreams.order(created_at: :desc)
-
-  # Get all unique tags for dropdown
-  @available_tags = Dream.where(private: [false, nil])
-                        .where.not(tags: [nil, ''])
-                        .pluck(:tags)
-                        .flat_map { |tags| tags.split(',').map(&:strip) }
-                        .uniq
-                        .sort
-end
 
   def new
     @dream = Dream.new
@@ -49,14 +48,19 @@ end
           render json: {
             success: true,
             id: @dream.id,
-            message: "Dream saved successfully!",
+            message: "Dream saved successfully!"
           }, status: :created
         }
       end
     else
       respond_to do |format|
         format.html { render :new }
-        format.json { render json: { success: false, errors: @dream.errors.full_messages }, status: :unprocessable_entity }
+        format.json {
+          render json: {
+            success: false,
+            errors: @dream.errors.full_messages
+          }, status: :unprocessable_entity
+        }
       end
     end
   end
@@ -92,35 +96,36 @@ end
       return
     end
 
-    # Appel du service de transcription
     service = TranscriptionService.new(dream: @dream)
     result = service.transcribe
 
     if result[:success]
-      redirect_to dream_transcription_path(@dream),
-                  notice: "Transcription completed successfully!"
+      redirect_to dream_transcription_path(@dream), notice: "Transcription completed successfully!"
     else
-      redirect_to mydreams_path,
-                  alert: result[:message]
+      redirect_to mydreams_path, alert: result[:message]
     end
   end
 
-  protect_from_forgery except: :upload_audio
-
   def upload_audio
     title = params[:title].presence || "Untitled voice dream #{Time.current.strftime('%Y-%m-%d %H:%M:%S')}"
+    audio = params[:audio]
 
-    dream = current_user.dreams.create!(
-      title: title,
-      private: true
-    )
+    unless audio.present? && audio.size.to_i > 0
+      Rails.logger.warn "[UPLOAD] Fichier audio manquant ou vide"
+      render json: { success: false, error: "Aucun fichier audio valide reçu" }, status: :unprocessable_entity
+      return
+    end
 
-    dream.audio.attach(params[:audio])
+    dream = current_user.dreams.create!(title: title, private: true)
+    dream.audio.attach(audio)
+
+    Rails.logger.info "[UPLOAD] Audio attaché pour Dream ##{dream.id} (#{audio.content_type}, #{audio.size} bytes)"
 
     render json: { success: true, id: dream.id }, status: :ok
 
   rescue => e
-    render json: { success: false, error: e.message }, status: :unprocessable_entity
+    Rails.logger.error "[UPLOAD] ERREUR : #{e.class} - #{e.message}"
+    render json: { success: false, error: "Erreur serveur : #{e.message}" }, status: :unprocessable_entity
   end
 
   private
@@ -136,7 +141,7 @@ end
       :private,
       :audio,
       transcription_attributes: [
-        :id,           # indispensable pour modifier une transcription existante
+        :id,
         :content,
         :dream_type,
         :mood,
