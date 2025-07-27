@@ -110,13 +110,12 @@ export default class extends Controller {
   }
 
   // Action pour cliquer sur le backdrop
-  backdropClick(event) {
-    // Ne fermer que si on clique directement sur le backdrop
-    if (event.target === this.backdropTarget) {
-      this.cancel()
-    }
+backdropClick(event) {
+  // Plus précis : vérifier que c'est VRAIMENT le backdrop et pas un élément enfant
+  if (event.target === this.backdropTarget && !event.target.closest('[data-modal-target="dialog"]')) {
+    // this.cancel() // Toujours commenté
   }
-
+}
   // Gestion des touches clavier
   keydown(event) {
     if (!this.isVisible) return
