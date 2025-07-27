@@ -15,6 +15,11 @@
       <% end %>
     <% end %>
 
+    <!-- Chat Bot Icon - Nouvelle icône ajoutée -->
+    <%= link_to chat_path, class: "nav-chat-button" do %>
+      <i class="fas fa-comments fa-2x text-white"></i>
+    <% end %>
+
     <% if user_signed_in? %>
       <%= link_to edit_user_registration_path do %>
         <i class="fas fa-cog fa-2x text-white"></i>
