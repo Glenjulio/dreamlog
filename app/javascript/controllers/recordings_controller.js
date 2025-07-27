@@ -57,45 +57,68 @@ export default class extends Controller {
     this.timerTarget.textContent = `${minutes}:${seconds}`
   }
 
-  startRecording() {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(stream => {
-        this.audioChunks = []
-        this.mediaRecorder = new MediaRecorder(stream)
+startRecording() {
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      this.audioChunks = []
+      this.mediaRecorder = new MediaRecorder(stream)
 
-        this.showPlayButtonDisabled()
+      this.showPlayButtonDisabled()
 
-        this.mediaRecorder.ondataavailable = event => {
-          if (event.data.size > 0) {
-            this.audioChunks.push(event.data)
-          }
+      // Désactive le bouton "Sauvegarder"
+      if (this.hasSaveButtonTarget) {
+        this.saveButtonTarget.disabled = true
+      }
+
+      this.mediaRecorder.ondataavailable = event => {
+        if (event.data.size > 0) {
+          this.audioChunks.push(event.data)
+        }
+      }
+
+      this.mediaRecorder.onstop = () => {
+      setTimeout(() => {
+        if (!this.audioChunks || this.audioChunks.length === 0) {
+          console.warn("No audio chunks available after stop")
+          return
         }
 
-        this.mediaRecorder.onstop = () => {
-          this.audioBlob = new Blob(this.audioChunks, { type: "audio/webm" })
-          this.audioUrl = URL.createObjectURL(this.audioBlob)
-          this.setupAudioElement()
-          this.showDecisionButtons()
-          this.stopTimer()
-          console.log("Timer stopped after recording")
+        this.audioBlob = new Blob(this.audioChunks, { type: "audio/webm" })
+
+        if (this.audioBlob.size === 0) {
+          console.warn("Audio blob is empty")
+          return
         }
 
-        this.buttonTarget.innerHTML = '<i class="fa-solid fa-stop fa-2x"></i>'
-        this.mediaRecorder.start()
-        this.startTimer()
-        if (this.hasTimerTarget) {
-          this.timerTarget.classList.remove("d-none")
+        this.audioUrl = URL.createObjectURL(this.audioBlob)
+        this.setupAudioElement()
+        this.showDecisionButtons()
+        this.stopTimer()
+        console.log("Timer stopped after recording")
+
+        if (this.hasSaveButtonTarget) {
+          this.saveButtonTarget.disabled = false
         }
-        console.log("Recording started")
-      })
-      .catch(error => {
-        console.error("Microphone access error:", error)
-        this.recording = false
-        this.hideAllButtons()
-        this.showErrorMessage(error)
-        this.resetToRecordingButton()
-      })
-  }
+      }, 150)
+}
+
+      this.buttonTarget.innerHTML = '<i class="fa-solid fa-stop fa-2x"></i>'
+      this.mediaRecorder.start()
+      this.startTimer()
+      if (this.hasTimerTarget) {
+        this.timerTarget.classList.remove("d-none")
+      }
+      console.log("Recording started")
+    })
+    .catch(error => {
+      console.error("Microphone access error:", error)
+      this.recording = false
+      this.hideAllButtons()
+      this.showErrorMessage(error)
+      this.resetToRecordingButton()
+    })
+}
+
 
   stopRecording() {
     if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
@@ -167,6 +190,10 @@ export default class extends Controller {
   }
 
   async saveAndTranscribe() {
+        if (!this.audioBlob || this.audioBlob.size === 0) {
+      this.showCustomNotification("Erreur : aucun enregistrement valide à sauvegarder.", "error")
+      return
+    }
     try {
       const modalElement = document.querySelector('[data-controller~="modal"]')
       if (!modalElement) throw new Error('Modal not found')
@@ -260,6 +287,11 @@ export default class extends Controller {
   }
 
   saveAndTranscribeWithFallback() {
+        if (!this.audioBlob || this.audioBlob.size === 0) {
+      this.showCustomNotification("Erreur : aucun enregistrement valide à sauvegarder.", "error")
+      return
+    }
+
     const title = window.prompt("Give a title to your dream:")
     if (!title?.trim()) {
       this.showCustomNotification("A title is required to save your dream!", "warning")
