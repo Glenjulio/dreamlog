@@ -4,13 +4,14 @@
      data-action="keydown@document->modal#keydown"
      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
 
-  <!-- Backdrop SANS action pour éviter fermeture accidentelle -->
-  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);"
-       data-modal-target="backdrop">
-  </div>
-
-  <div data-modal-target="dialog"
-       class="modal-dialog">
+  <!-- Backdrop -->
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); pointer-events: none;"
+     data-modal-target="backdrop">
+</div>
+<div data-modal-target="dialog"
+     data-action="click->modal#debugFocus"
+     class="modal-dialog"
+     style="pointer-events: auto;">
 
     <div style="padding: 24px 24px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
       <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: white; text-align: center;" data-modal-target="title">

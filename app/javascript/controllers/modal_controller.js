@@ -109,13 +109,25 @@ export default class extends Controller {
     }
   }
 
-  // Action pour cliquer sur le backdrop
-backdropClick(event) {
-  // Plus précis : vérifier que c'est VRAIMENT le backdrop et pas un élément enfant
-  if (event.target === this.backdropTarget && !event.target.closest('[data-modal-target="dialog"]')) {
-    // this.cancel() // Toujours commenté
+  // Capturer tous les clics dans la modal
+// Copier le comportement du bouton Save
+  debugFocus(event) {
+    // Si ce n'est pas un bouton, faire comme le bouton Save
+    if (!event.target.matches('button') && this.hasInputTarget) {
+      // Exactement comme dans confirm() quand l'input est vide
+      this.inputTarget.classList.remove('is-invalid')
+      this.inputTarget.focus()
+    }
   }
-}
+
+  // Action pour cliquer sur le backdrop
+  backdropClick(event) {
+    // Plus précis : vérifier que c'est VRAIMENT le backdrop et pas un élément enfant
+    if (event.target === this.backdropTarget && !event.target.closest('[data-modal-target="dialog"]')) {
+      // this.cancel() // Toujours commenté
+    }
+  }
+
   // Gestion des touches clavier
   keydown(event) {
     if (!this.isVisible) return
