@@ -2,61 +2,61 @@
   <div class="container px-3" style="white-space: pre-wrap; color: white;">
 
     <!-- Titre du rêve -->
-    <h1 class="mb-4 text-center"><%= @dream.title %></h1>
+    <h1 class="mb-2 text-center"><%= @dream.title %></h1>
 
-    <!-- Transcription -->
+    <!-- Carte pour l'analyse -->
+    <div class="dream-card mb-4">
+      <h5>Analysis</h5>
+      <p><%= @analysis.content %></p>
+    </div>
+
+    <!-- Carte pour la transcription -->
     <% if @transcription.content.present? %>
-      <div class="mb-4">
-        <h2>Transcription</h2>
+      <div class="dream-card mb-4">
+        <h5>Transcription</h5>
         <p><%= @transcription.content %></p>
       </div>
     <% end %>
 
-    <!-- Résultats du formulaire -->
+    <!-- Carte pour les résultats du formulaire -->
     <% if @transcription.dream_type.present? || @transcription.mood.present? || @transcription.tag.present? || @transcription.rating.present? %>
-      <div class="mb-4">
-        <h2>Additional Information</h2>
-        <ul>
-          <% if @transcription.dream_type.present? %>
-            <li>
-              <strong>Type of dream:</strong>
-              <%= @transcription.dream_type == "dream" ? "🌙 Dream" : "😱 Nightmare" %>
-            </li>
-          <% end %>
+      <div class="dream-card mb-4">
+        <h5>Additional Information</h5>
 
-          <% if @transcription.mood.present? %>
-            <li>
-              <strong>Mood:</strong>
-              <%=
-                case @transcription.mood
-                when "happy" then "😀 Happy"
-                when "sad" then "😢 Sad"
-                when "anxious" then "😰 Anxious"
-                when "calm" then "😌 Calm"
-                when "excited" then "🤩 Excited"
-                when "angry" then "😡 Angry"
-                else @transcription.mood.capitalize
-                end
-              %>
-            </li>
-          <% end %>
+        <% if @transcription.dream_type.present? %>
+          <p style="margin: 0; padding: 0;">
+            <strong style="margin-left: 0; padding-left: 0;">Type of dream:</strong>
+            <%= @transcription.dream_type == "dream" ? "🌙 Dream" : "😱 Nightmare" %>
+          </p>
+        <% end %>
 
-          <% if @transcription.tag.present? %>
-            <li><strong>Keywords:</strong> <%= @transcription.tag %></li>
-          <% end %>
+        <% if @transcription.mood.present? %>
+          <p style="margin: 0; padding: 0;">
+            <strong style="margin-left: 0; padding-left: 0;">Mood:</strong>
+            <%=
+              case @transcription.mood
+              when "happy" then "😀 Happy"
+              when "sad" then "😢 Sad"
+              when "anxious" then "😰 Anxious"
+              when "calm" then "😌 Calm"
+              when "excited" then "🤩 Excited"
+              when "angry" then "😡 Angry"
+              else @transcription.mood.capitalize
+              end
+            %>
+          </p>
+        <% end %>
 
-          <% if @transcription.rating.present? %>
-            <li><strong>Rating:</strong> <%= @transcription.rating %> / 5</li>
-          <% end %>
-        </ul>
+        <% if @transcription.tag.present? %>
+          <p style="margin: 0; padding: 0;"><strong style="margin-left: 0; padding-left: 0;">Keywords:</strong> <%= @transcription.tag %></p>
+        <% end %>
+
+        <% if @transcription.rating.present? %>
+          <p style="margin: 0; padding: 0;"><strong style="margin-left: 0; padding-left: 0;">Rating:</strong> <%= @transcription.rating %> / 5</p>
+        <% end %>
+
       </div>
     <% end %>
-
-    <!-- Analyse -->
-    <div class="mb-4">
-      <h2>Analysis</h2>
-      <p><%= @analysis.content %></p>
-    </div>
 
     <!-- Bouton de partage -->
     <!--
