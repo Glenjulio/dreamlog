@@ -9,6 +9,9 @@
   box-shadow: 0 0 20px rgba(0, 234, 255, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
+  /* Padding interne ajouté pour créer de l'espace à l'intérieur de la carte */
+  padding: 1rem; /* Tu peux ajuster cette valeur selon tes préférences */
+
   &:hover {
     transform: scale(1.01);
     box-shadow: 0 0 25px rgba(0, 234, 255, 0.1);
@@ -26,4 +29,36 @@
     width: 100%;
     margin-top: 1rem;
   }
+}
+
+/* Réduit les marges dans la section 'Additional Information' */
+.dream-card ul {
+  padding: 0 !important;  /* Supprimer le padding de la liste */
+  margin: 0 !important;   /* Supprimer la marge de la liste */
+  list-style: none !important; /* Supprimer les puces ou numéros */
+}
+
+.dream-card li {
+  margin-bottom: 0.3rem !important; /* Réduire l'espacement entre les éléments */
+  padding: 0 !important;            /* Supprimer tout padding dans chaque élément */
+}
+
+.dream-card p {
+  margin: 0 !important;        /* Supprime toute marge autour des paragraphes */
+  padding: 0 !important;       /* Supprime tout padding */
+  margin-left: 0 !important;   /* Supprime toute marge à gauche */
+  padding-left: 0 !important;  /* Supprime tout padding à gauche */
+}
+
+/* Supprimer la marge uniquement pour les éléments <strong> de "Type of dream" et "Mood" */
+.dream-card p:first-of-type strong,
+.dream-card p:nth-of-type(2) strong {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.dream-text {
+  margin: 0; /* Supprime la marge autour du texte */
+  padding: 0; /* Supprime le padding autour du texte */
+  display: inline-block; /* S'assure que ce texte inline ne provoque pas d'espaces indésirables */
 }

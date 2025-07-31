@@ -91,15 +91,22 @@ class DreamsController < ApplicationController
       return
     end
 
+    # Vérification si une transcription existe déjà
     if @dream.transcription.present?
       redirect_to dream_transcription_path(@dream), notice: "Transcription already exists"
       return
     end
 
+    # Debugging
+    puts "Launching transcription service for dream ##{@dream.id}"
+
+    # Appel du service de transcription
     service = TranscriptionService.new(dream: @dream)
     result = service.transcribe
 
+    # Si la transcription réussit, redirige vers la transcription
     if result[:success]
+      @dream.reload # Pour s'assurer que la transcription est bien associée
       redirect_to dream_transcription_path(@dream), notice: "Transcription completed successfully!"
     else
       redirect_to mydreams_path, alert: result[:message]

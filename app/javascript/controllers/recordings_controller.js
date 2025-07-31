@@ -190,101 +190,91 @@ startRecording() {
   }
 
   async saveAndTranscribe() {
-        if (!this.audioBlob || this.audioBlob.size === 0) {
-      this.showCustomNotification("Erreur : aucun enregistrement valide à sauvegarder.", "error")
-      return
+    if (!this.audioBlob || this.audioBlob.size === 0) {
+      this.showCustomNotification("Erreur : aucun enregistrement valide à sauvegarder.", "error");
+      return;
     }
-    try {
-      const modalElement = document.querySelector('[data-controller~="modal"]')
-      if (!modalElement) throw new Error('Modal not found')
 
-      const modalController = this.application.getControllerForElementAndIdentifier(modalElement, 'modal')
-      if (!modalController) throw new Error('Modal controller not found')
+  try {
+    const modalElement = document.querySelector('[data-controller~="modal"]');
+    if (!modalElement) throw new Error('Modal not found');
 
-      const title = await modalController.show({
-        title: "Save Your Dream",
-        placeholder: "Give your dream a memorable title...",
-        confirmText: "Save Dream",
-        cancelText: "Cancel"
-      })
+    const modalController = this.application.getControllerForElementAndIdentifier(modalElement, 'modal');
+    if (!modalController) throw new Error('Modal controller not found');
 
-      this.showLoadingState("Saving in progress...")
+    // Afficher la fenêtre modale pour saisir le titre du rêve
+    const title = await modalController.show({
+      title: "Save Your Dream",
+      placeholder: "Give your dream a memorable title...",
+      confirmText: "Save Dream",
+      cancelText: "Cancel"
+    });
 
-      const file = new File([this.audioBlob], "recording.webm", { type: "audio/webm" })
-      const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
+    this.showLoadingState("Saving in progress...");
 
-      upload.create((error, blob) => {
-        if (error) {
-          console.error("Direct upload failed:", error)
-          this.hideLoadingState()
-          this.showCustomNotification("Error during uploading. Try again.", "error")
-          return
-        }
+    // Créer un fichier Blob à partir de l'enregistrement audio
+    const file = new File([this.audioBlob], "recording.webm", { type: "audio/webm" });
+    const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads");
 
-        const dreamData = {
-          dream: {
-            title: title,
-            tags: "voice_recording",
-            private: false,
-            audio: blob.signed_id
-          }
-        }
-
-        fetch("/dreams.json", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "X-CSRF-Token": this.getMetaValue("csrf-token")
-          },
-          body: JSON.stringify(dreamData)
-        })
-        .then(response => {
-          if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-          return response.json()
-        })
-        .then(data => {
-          this.hideLoadingState()
-          if (data.success) {
-            const dreamId = data.id
-            this.showCustomNotification("Dream saved, transcribing...", "info")
-
-            fetch(`/dreams/${dreamId}/transcribe`, {
-              method: "POST",
-              headers: {
-                "X-CSRF-Token": this.getMetaValue("csrf-token")
-              }
-            })
-            .then(resp => {
-              if (resp.redirected) {
-                window.location.href = resp.url
-              } else {
-                this.showCustomNotification("Transcription completed", "success")
-                window.location.href = `/dreams/${dreamId}/transcription`
-              }
-            })
-            .catch(error => {
-              console.error("Transcription failed:", error)
-              this.showCustomNotification("Error during transcription", "error")
-              window.location.href = `/dreams/${dreamId}`
-            })
-          } else {
-            throw new Error(data.errors?.join(", ") || "Unknown error")
-          }
-        })
-        .catch(error => {
-          this.hideLoadingState()
-          this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
-        })
-      })
-    } catch (error) {
-      if (error.message === 'User cancelled') {
-        this.showCustomNotification("Save cancelled", "info")
-      } else {
-        this.saveAndTranscribeWithFallback()
+    // Télécharger le fichier audio vers Rails
+    upload.create((error, blob) => {
+      if (error) {
+        console.error("Direct upload failed:", error);
+        this.hideLoadingState();
+        this.showCustomNotification("Error during uploading. Try again.", "error");
+        return;
       }
+
+      const dreamData = {
+        dream: {
+          title: title,
+          tags: "voice_recording",
+          private: false,
+          audio: blob.signed_id
+        }
+      };
+
+      // Enregistrer les données du rêve dans la base
+      fetch("/dreams.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-CSRF-Token": this.getMetaValue("csrf-token")
+        },
+        body: JSON.stringify(dreamData)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        return response.json();
+      })
+      .then(data => {
+        this.hideLoadingState();
+
+        if (data.success) {
+          const dreamId = data.id;
+          this.showCustomNotification("Dream saved, transcribing...", "info");
+
+          // Rediriger vers la page d'édition de la transcription du rêve
+          window.location.href = `/dreams/${dreamId}/transcription/edit`;
+        } else {
+          throw new Error(data.errors?.join(", ") || "Unknown error");
+        }
+      })
+      .catch(error => {
+        this.hideLoadingState();
+        this.showCustomNotification(`Failed to save dream: ${error.message}`, "error");
+      });
+    });
+  } catch (error) {
+    if (error.message === 'User cancelled') {
+      this.showCustomNotification("Save cancelled", "info");
+    } else {
+      this.saveAndTranscribeWithFallback();
     }
   }
+}
+
 
   saveAndTranscribeWithFallback() {
         if (!this.audioBlob || this.audioBlob.size === 0) {

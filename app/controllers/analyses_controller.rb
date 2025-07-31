@@ -32,7 +32,7 @@ class AnalysesController < ApplicationController
 
     # Générer l'analyse avec feedback utilisateur
     begin
-      Rails.logger.info "tarting AI analysis generation for dream #{@dream.id}"
+      Rails.logger.info "Starting AI analysis generation for dream #{@dream.id}"
 
       analysis_content = generate_analysis_content
 
