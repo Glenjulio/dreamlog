@@ -1,17 +1,4 @@
 // =============================================================================
-// POLICES GOOGLE FONTS POUR DREAMLOG
-// =============================================================================
-
-:root {
-  --font-title: 'Great Vibes', cursive;
-  --font-script: 'Dancing Script', cursive;
-  --primary-blue: #6366F1;
-  --primary-cyan: #00fff7;
-  --pink-accent: #e94560;
-  --white: #ffffff;
-}
-
-// =============================================================================
 // TITRE DREAMLOG AVEC NOUVELLE POLICE
 // =============================================================================
 
@@ -59,10 +46,12 @@ h2.display-6 {
 // =============================================================================
 
 .record-button {
-  width: 35vw !important;
-  height: 35vw !important;
-  max-width: 250px !important;
-  max-height: 250px !important;
+  // Taille agrandie
+  width: 40vw !important; // Agrandi de 35vw à 40vw
+  height: 40vw !important; // Agrandi de 35vw à 40vw
+  max-width: 280px !important; // Agrandi de 250px à 280px
+  max-height: 280px !important; // Agrandi de 250px à 280px
+
   border-radius: 50% !important;
   background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-cyan) 100%) !important;
   border: none !important;
@@ -71,7 +60,10 @@ h2.display-6 {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 5rem !important;
+
+  // Icône réduite
+  font-size: 3rem !important; // Réduit de 5rem à 3rem
+
   box-shadow:
     0 15px 40px rgba(99, 102, 241, 0.4),
     0 0 60px rgba(99, 102, 241, 0.3),
@@ -95,6 +87,10 @@ h2.display-6 {
     animation: gradientShift 4s ease infinite;
   }
 
+  &:hover {
+    transform: scale(1.05) !important;
+  }
+
   &:active {
     transform: scale(0.95) !important;
   }
@@ -106,9 +102,11 @@ h2.display-6 {
   }
 
   @media (max-width: 768px) {
-    width: 40vw !important;
-    height: 40vw !important;
-    font-size: 3rem !important;
+    width: 50vw !important; // Encore plus grand sur mobile
+    height: 50vw !important;
+    max-width: 300px !important;
+    max-height: 300px !important;
+    font-size: 2.5rem !important; // Icône proportionnelle mobile
   }
 }
 
@@ -342,6 +340,15 @@ label::after {
 // =============================================================================
 
 @media (max-width: 768px) {
+  // Record button responsive
+  .record-button {
+    width: 50vw !important;
+    height: 50vw !important;
+    max-width: 300px !important;
+    max-height: 300px !important;
+    font-size: 2rem !important;
+  }
+
   .gradient-button {
     padding: 0.8rem 1.2rem !important;
     font-size: 0.9rem !important;
