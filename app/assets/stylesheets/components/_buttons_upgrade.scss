@@ -55,7 +55,7 @@ h2.display-6 {
 }
 
 // =============================================================================
-// BOUTON PRINCIPAL D'ENREGISTREMENT - STYLE MAGIQUE
+// BOUTON PRINCIPAL D'ENREGISTREMENT
 // =============================================================================
 
 .record-button {
@@ -144,7 +144,7 @@ h2.display-6 {
 }
 
 // =============================================================================
-// BOUTONS GRADIENT (RECTANGLES ARRONDIS)
+// BOUTONS GRADIENT
 // =============================================================================
 
 .gradient-button {
@@ -162,7 +162,6 @@ h2.display-6 {
   min-width: 100px !important;
   min-height: 50px !important;
 
-  // AJOUT CRITIQUE pour que les boutons soient cliquables
   pointer-events: auto !important;
 
   &:hover {
@@ -202,7 +201,7 @@ h2.display-6 {
 }
 
 // =============================================================================
-// BOUTONS OPTIONS (PLUS LARGES POUR LE TEXTE)
+// BOUTONS OPTIONS
 // =============================================================================
 
 .option-button {
@@ -342,9 +341,6 @@ label::after {
 // =============================================================================
 
 @media (max-width: 768px) {
-  .main-content {
-    padding-bottom: 120px !important;
-  }
 
   .gradient-button {
     padding: 0.8rem 1.2rem !important;

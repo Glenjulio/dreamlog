@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   </head>
 
-  <body class="text-white d-flex flex-column min-vh-100">
+  <body class="text-white">
     <% 15.times do %>
       <div class="firefly"></div>
     <% end %>
@@ -29,18 +29,22 @@
     <!-- Analysis Loader -->
     <%= render "shared/analysis_loader" %>
 
-    <!-- Contenu principal avec padding pour ne pas être masqué par la bottom_nav -->
-    <div class="main-content w-100 flex-grow-1 d-flex flex-column justify-content-center align-items-center py-4" style="z-index: 1; position: relative;">
-      <%= yield %>
+    <!-- Zone de contenu (scroll libre) -->
+    <div class="content-zone">
+      <div class="main-content w-100 d-flex flex-column justify-content-center align-items-center py-4" style="z-index: 1; position: relative;">
+        <%= yield %>
+      </div>
+
+      <!-- Include flash notifications handler -->
+      <%= javascript_include_tag "flash_notifications", defer: true %>
+
+      <!-- Custom Title Modal -->
+      <%= render "shared/title_modal" %>
     </div>
 
-    <!-- Include flash notifications handler -->
-    <%= javascript_include_tag "flash_notifications", defer: true %>
-
-    <!-- Custom Title Modal -->
-    <%= render "shared/title_modal" %>
-
-    <!-- Bottom navbar -->
-    <%= render("shared/bottom_nav") unless @hide_bottom_nav %>
+    <!-- Zone navbar -->
+    <div class="navbar-zone">
+      <%= render("shared/bottom_nav") unless @hide_bottom_nav %>
+    </div>
   </body>
 </html>
