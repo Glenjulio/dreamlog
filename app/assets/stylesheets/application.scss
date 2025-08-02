@@ -4,7 +4,6 @@
 @import "components/typography_system";
 @import "components/dreamlog_title";
 @import "components/record_button";
-// @import "components/gradient_button";
 @import "components/bottom_nav";
 @import "components/form";
 @import "components/play_button";
@@ -20,21 +19,113 @@
 @import "components/buttons_upgrade";
 @import "components/dreams";
 
-// Override des titres Bootstrap avec nos polices
 .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
   font-family: var(--font-title) !important;
   color: var(--white) !important;
   text-shadow: 0 0 15px var(--text-glow) !important;
 }
 
-// Classes utilitaires pour alternance de polices
 .font-title { font-family: var(--font-title) !important; }
 .font-script { font-family: var(--font-script) !important; }
 .font-body { font-family: var(--font-body) !important; }
 
-// RESPONSIVE TYPOGRAPHY HELPERS
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+}
 
-// Classes pour ajuster la taille selon l'écran
+.content-zone {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: calc(100vh - 75px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  z-index: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.navbar-zone {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 75px !important;
+  z-index: 1000 !important;
+}
+
+.main-content {
+  min-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 20px !important;
+}
+
+.page-title {
+  margin-top: 0 !important;
+  padding-top: 20px !important;
+}
+
+.main-content:has(.dreams-grid),
+.main-content:has(.dream-card) {
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  padding-top: 20px !important;
+}
+
+.dreams-page .main-content {
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  padding-top: 20px !important;
+}
+
+.dreams-page {
+  width: 100%;
+  padding: 1rem;
+}
+
+.devise-page {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem 1rem;
+  margin-top: 0;
+}
+
+.main-content:has(.devise-page) {
+  justify-content: flex-start !important;
+  align-items: center !important;
+  padding-top: 1rem !important;
+}
+
+.analysis-page {
+  width: 100%;
+  padding: 1rem 0;
+  margin-top: 0;
+}
+
+.main-content:has(.analysis-page) {
+  justify-content: flex-start !important;
+  align-items: center !important;
+  padding-top: 1rem !important;
+}
+
+.analysis-page .container {
+  max-width: 900px !important;
+  margin-bottom: 2rem !important;
+}
+
+p, .text-content {
+  font-family: var(--font-body) !important;
+  line-height: 1.6 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
 @media (max-width: 768px) {
   .responsive-title {
     font-size: 2.5rem !important;
@@ -55,16 +146,17 @@
   }
 }
 
-// CONTENU PRINCIPAL
+@media (min-width: 768px) {
+  .dreams-page {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.main-content {
-  padding-bottom: 100px;
-  // background-color: rgba(255, 0, 0, 0.1); // Supprimer la couleur de test
-
-  // Styles pour le contenu avec nouvelle typographie
-  p, .text-content {
-    font-family: var(--font-body) !important;
-    line-height: 1.6 !important;
-    color: rgba(255, 255, 255, 0.85) !important;
+  .dream-card {
+    max-width: 600px;
+    width: 100%;
   }
 }
