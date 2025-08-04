@@ -152,7 +152,7 @@ h2.display-6 {
   color: var(--white) !important;
   border: none !important;
   border-radius: 20px !important;
-  padding: 1rem 1.5rem !important;
+  padding: 1rem 1.5rem !important; /* Retour à la valeur initiale */
   font-size: 1rem !important;
   font-weight: 500 !important;
   text-align: center !important;
@@ -160,7 +160,9 @@ h2.display-6 {
   transition: all 0.3s ease !important;
   cursor: pointer !important;
   min-width: 100px !important;
-  min-height: 50px !important;
+  max-height: 50px !important;
+  line-height: 20px !important; /* Ajout d'une ligne pour forcer l'alignement vertical */
+
 
   pointer-events: auto !important;
 
@@ -179,6 +181,7 @@ h2.display-6 {
     box-shadow: 0 4px 20px rgba(233, 69, 96, 0.3) !important;
   }
 }
+
 
 // =============================================================================
 // BOUTONS POUBELLE ET SAVE (RONDS)
@@ -343,9 +346,22 @@ label::after {
 @media (max-width: 768px) {
 
   .gradient-button {
-    padding: 0.8rem 1.2rem !important;
-    font-size: 0.9rem !important;
-    min-width: 80px !important;
+      padding: 0.8rem 1.2rem !important;
+      font-size: 0.9rem !important;
+      min-width: 80px !important;
+      max-height: 45px !important;
+
+      button.gradient-button[data-step-form-target="previous"],
+      button.gradient-button[data-step-form-target="next"],
+      button.gradient-button[data-step-form-target="submit"] {
+      min-width: 60px !important;
+      height: 40px !important;
+      padding: 0.8rem 1rem !important;
+      font-size: 0.9rem !important;
+      min-height: 40px !important;
+      max-height: 40px !important;
+      border-radius: 20px !important;
+    }
   }
 
   .option-button {
