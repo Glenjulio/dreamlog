@@ -16,36 +16,36 @@ class AnalysesController < ApplicationController
   def generate
     @transcription = @dream.transcription
 
-    # Vérifications préalables
     unless @transcription.present?
       redirect_to edit_dream_path(@dream),
                   alert: "Please add a transcription before generating an analysis."
       return
     end
 
-    # Vérifier si une analyse existe déjà
     if @transcription.analysis.present?
       redirect_to dream_analysis_path(@dream, @transcription.analysis),
                   notice: "Analysis already exists for this transcription."
       return
     end
 
-    # Générer l'analyse avec feedback utilisateur
     begin
-      Rails.logger.info "tarting AI analysis generation for dream #{@dream.id}"
+      Rails.logger.info "🚀 Starting AI analysis generation for dream #{@dream.id}"
 
-      analysis_content = generate_analysis_content
+      analysis_data = generate_analysis_data
 
-      # Créer l'analyse en base
-      @analysis = @transcription.create_analysis!(content: analysis_content)
+      if analysis_data.key?("error")
+        raise StandardError, analysis_data["error"]
+      end
 
-      Rails.logger.info "Analysis created successfully with ID #{@analysis.id}"
+      @analysis = @transcription.create_analysis!(data: analysis_data)
+
+      Rails.logger.info "✅ Analysis created successfully with ID #{@analysis.id}"
 
       redirect_to dream_analysis_path(@dream, @analysis),
                   notice: "Analysis generated successfully!"
 
     rescue StandardError => e
-      Rails.logger.error "Error in analysis generation: #{e.message}"
+      Rails.logger.error "❌ Error in analysis generation: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
 
       redirect_to dream_transcription_path(@dream),
@@ -61,8 +61,7 @@ class AnalysesController < ApplicationController
     redirect_to mydreams_path, alert: "Dream not found"
   end
 
-  def generate_analysis_content
-    # Utiliser le service OpenAI avec la personnalité de l'utilisateur
+  def generate_analysis_data
     OpenAiService.new(
       transcription: @transcription,
       personality: current_user.personality
