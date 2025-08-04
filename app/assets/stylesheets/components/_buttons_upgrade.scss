@@ -148,6 +148,7 @@ h2.display-6 {
 // =============================================================================
 
 .gradient-button {
+  margin-bottom: 1.5rem;
   background: linear-gradient(45deg, var(--primary-blue) 0%, var(--primary-cyan) 100%) !important;
   color: var(--white) !important;
   border: none !important;
@@ -161,8 +162,9 @@ h2.display-6 {
   cursor: pointer !important;
   min-width: 100px !important;
   min-height: 50px !important;
-
+  margin-bottom: 15rem;
   pointer-events: auto !important;
+
 
   &:hover {
     transform: translateY(-2px) !important;

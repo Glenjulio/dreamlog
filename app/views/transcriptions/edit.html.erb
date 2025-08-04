@@ -100,14 +100,13 @@
         Next
       </button>
 
-        <%= f.button :submit,
-    "Analyse",
-    class: "gradient-button",
-    data: {
-      step_form_target: "submit",
-      analysis_form_target: "submitButton",
-      action: "click->analysis-form#submitWithLoader"
-    } %>
+      <button type="button"
+              class="gradient-button"
+              data-step-form-target="submit"
+              analysis-form-target="submitButton"
+              data-action="click->analysis-form#submitWithLoader">
+        Analyse
+      </button>
     </div>
   <% end %>
 </div>
