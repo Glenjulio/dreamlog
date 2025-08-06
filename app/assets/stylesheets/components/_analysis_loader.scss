@@ -249,3 +249,15 @@
     width: 250px;
   }
 }
+
+// Overwrite the _nav.scss defaults
+
+body {
+  background-color: red !important;
+  font: yellow !important;
+}
+
+
+#analysisTabs .nav-link {
+  background:rgba(221, 34, 34, 0.1) !important;
+}

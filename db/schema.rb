@@ -47,7 +47,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_04_203111) do
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "data"
+    t.jsonb "data", default: {}, null: false
     t.index ["transcription_id"], name: "index_analyses_on_transcription_id"
   end
 
@@ -60,7 +60,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_04_203111) do
     t.datetime "updated_at", null: false
     t.string "tags"
     t.boolean "private"
-    t.text "transcription"
     t.index ["created_at"], name: "index_dreams_on_created_at"
     t.index ["private"], name: "index_dreams_on_private"
     t.index ["user_id"], name: "index_dreams_on_user_id"
