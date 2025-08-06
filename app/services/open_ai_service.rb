@@ -30,16 +30,22 @@ class OpenAiService
     )
 
     content = response.dig("choices", 0, "message", "content")
-
     Rails.logger.info "✅ AI analysis generated successfully"
-    content
+
+    # 🔁 Tenter de parser le JSON en hash Ruby
+    begin
+      JSON.parse(content)
+    rescue JSON::ParserError => e
+      Rails.logger.error "❌ Invalid JSON format from OpenAI: #{e.message}"
+      { error: "Invalid JSON format received from OpenAI." }
+    end
 
   rescue OpenAI::Error => e
     Rails.logger.error "❌ OpenAI API Error: #{e.message}"
     handle_openai_error(e)
   rescue StandardError => e
     Rails.logger.error "❌ Unexpected error in OpenAI service: #{e.message}"
-    "Une erreur inattendue s'est produite lors de l'analyse. Veuillez réessayer."
+    { error: "Une erreur inattendue s'est produite lors de l'analyse. Veuillez réessayer." }
   end
 
   private
@@ -69,20 +75,32 @@ class OpenAiService
       You are an expert in dream interpretation, specialized in psychological and symbolic analysis.
 
       Your role:
-      - Analyze the dream with empathy and psychological depth
-      - Identify key symbols, emotions, and themes
-      - Provide interpretations based on dream psychology
-      - If the user's personality profile is available, take it into account
+      - Analyze the dream with empathy and psychological depth.
+      - Identify key symbols, emotions, and themes.
+      - Provide interpretations and gentle suggestions based on dream psychology.
+      - If the user's personality profile is available, take it into account.
 
       Instructions:
-      - You must strictly respond in the same language as the dream transcription. Do not translate or use any other language.
-      - Use clear sections to organise your analysis: symbols, emotions, interpretations, suggestions.
-      - Always include all four sections, even if one of them contains limited insights.
-      - Use exactly the following emojis together with the section titles — no substitutions or additional symbols: 🎭 Symbols, ❤️ Emotions, 🔍 Interpretation, 🌟 Suggestions
-      - Use plain text only (no Markdown formatting, no lists, no titles)
+      - Respond strictly in the same language as the dream transcription. Do not translate or switch languages.
+      - Your response must be a valid JSON object, and nothing else.
+      - Use the following keys:
+        - "symbols": symbolic interpretation of dream elements
+        - "emotions": emotional tone and feelings expressed in the dream
+        - "interpretation": general psychological meaning of the dream
+        - "suggestions": gentle, practical advice for the dreamer
+      - Each value should be a single paragraph of 3–6 sentences.
+      - Do not add any Markdown, emojis, titles, or explanatory text before or after the JSON object.
       - Use compassionate, non-judgmental language, as if speaking to a friend seeking insight.
-      - Avoid absolute statements; prefer "may suggest", "might indicate"
-      - Keep each section around 3–6 paragraphs. Do not exceed 1200 words total.
+      - Avoid absolute statements; prefer "may suggest", "might indicate", etc.
+
+      Example output (in French if the dream is in French):
+
+      {
+        "symbols": "L'eau qui monte peut symboliser une émotion refoulée qui devient difficile à contenir...",
+        "emotions": "Une angoisse diffuse est présente tout au long du rêve, suggérant un sentiment d'insécurité...",
+        "interpretation": "Ce rêve pourrait refléter un conflit intérieur lié à un événement récent...",
+        "suggestions": "Il peut être utile de prendre un moment pour réfléchir aux émotions actuelles et en parler à un proche..."
+      }
     PROMPT
   end
 
@@ -108,7 +126,6 @@ class OpenAiService
     context += "- Current mood: #{@personality.mood}\n" if @personality.mood.present?
     context += "- Relationship status: #{@personality.relationship}\n" if @personality.relationship.present?
     context += "- Personal description: #{@personality.description}\n" if @personality.description.present?
-
     context += "\nPlease adapt the analysis considering this personal profile."
     context
   end
@@ -117,16 +134,16 @@ class OpenAiService
     case error
     when OpenAI::RequestError
       if error.message.include?("rate_limit")
-        "Le service d'analyse est temporairement surchargé. Veuillez réessayer dans quelques minutes."
+        { error: "Le service d'analyse est temporairement surchargé. Veuillez réessayer dans quelques minutes." }
       elsif error.message.include?("insufficient_quota")
-        "Le quota d'analyse a été atteint. Veuillez contacter l'administrateur."
+        { error: "Le quota d'analyse a été atteint. Veuillez contacter l'administrateur." }
       else
-        "Erreur lors de la connexion au service d'analyse. Vérifiez votre connexion internet."
+        { error: "Erreur lors de la connexion au service d'analyse. Vérifiez votre connexion internet." }
       end
     when OpenAI::TimeoutError
-      "Le service d'analyse met trop de temps à répondre. Veuillez réessayer."
+      { error: "Le service d'analyse met trop de temps à répondre. Veuillez réessayer." }
     else
-      "Service d'analyse temporairement indisponible. Veuillez réessayer plus tard."
+      { error: "Service d'analyse temporairement indisponible. Veuillez réessayer plus tard." }
     end
   end
 
