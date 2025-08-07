@@ -2,15 +2,18 @@
   #analysisTabs .nav-link {
     background-color: rgba(63, 158, 244, 0.2) !important;
     color: white !important;
+    font-family: 'Comfortaa', cursive;
   }
 
     #analysisTabs .nav-link.active {
     background-color: rgba(63, 158, 244, 1) !important;
     color: white !important;
+    font-family: 'Comfortaa', cursive;
   }
 
   #analysisTabContent {
     min-height: 200px;
+    font-family: 'Comfortaa', cursive !important;
   }
 
 </style>
@@ -20,13 +23,11 @@
   <div class="container py-4 text-white">
 
     <!-- Title -->
-    <h1 class="text-center mb-1">Analysis for </h1>
-    <h1 class="text-center mb-5"><%= @dream.title %></h1>
+    <h1 class="text-center mb-1">Your Personal Analysis</h1>
+    <h2 class="text-center mb-5"><%= @dream.title.titleize %></h2>
 
     <!-- Tabs -->
     <% if @analysis.data.present? %>
-      <h2 class="mb-3">Analysis</h2>
-
       <ul class="nav nav-tabs mb-3" id="analysisTabs" role="tablist">
         <% { "symbols" => "🎭 Symbols", "emotions" => "❤️ Emotions", "interpretation" => "🔍 Interpretation", "suggestions" => "🌟 Suggestions" }.each_with_index do |(key, label), index| %>
           <li class="nav-item" role="presentation">
@@ -63,10 +64,10 @@
         <h3>Additional Information</h3>
         <ul class="list-unstyled">
           <% if @transcription.dream_type.present? %>
-            <li><strong>Type of dream:</strong> <%= @transcription.dream_type == "dream" ? "🌙 Dream" : "😱 Nightmare" %></li>
+            <li>Type of dream: <%= @transcription.dream_type == "dream" ? "🌙 Dream" : "😱 Nightmare" %></li>
           <% end %>
           <% if @transcription.mood.present? %>
-            <li><strong>Mood:</strong>
+            <li>Mood:
               <%= {
                 "happy" => "😀 Happy", "sad" => "😢 Sad", "anxious" => "😰 Anxious",
                 "calm" => "😌 Calm", "excited" => "🤩 Excited", "angry" => "😡 Angry"
@@ -74,10 +75,10 @@
             </li>
           <% end %>
           <% if @transcription.tag.present? %>
-            <li><strong>Keywords:</strong> <%= @transcription.tag %></li>
+            <li>Keywords: <%= @transcription.tag %></li>
           <% end %>
           <% if @transcription.rating.present? %>
-            <li><strong>Rating:</strong> <%= @transcription.rating %> / 5</li>
+            <li>Rating: <%= @transcription.rating %> / 5</li>
           <% end %>
         </ul>
       </div>
