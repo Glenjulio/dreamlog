@@ -1,5 +1,5 @@
 <div class="container my-5">
-  <h2 class="mb-4 text-center"><%= @dream.title %></h2>
+  <h1 class="m-4 text-center">Dream Title: <%= @dream.title.titleize %></h1>
 
   <%= simple_form_for [@dream, @transcription],
       url: dream_transcription_path(@dream),
