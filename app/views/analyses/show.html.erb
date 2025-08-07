@@ -24,7 +24,7 @@
 
     <!-- Title -->
     <h1 class="text-center mb-1">Your Personal Analysis</h1>
-    <h2 class="text-center mb-5">Dream Title: <%= @dream.title %></h2>
+    <h2 class="text-center mb-5"><%= @dream.title.titleize %></h2>
 
     <!-- Tabs -->
     <% if @analysis.data.present? %>
