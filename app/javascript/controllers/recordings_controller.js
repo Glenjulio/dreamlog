@@ -1,3 +1,4 @@
+// app/javascript/controllers/recordings_controller.js
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 
@@ -57,68 +58,66 @@ export default class extends Controller {
     this.timerTarget.textContent = `${minutes}:${seconds}`
   }
 
-startRecording() {
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(stream => {
-      this.audioChunks = []
-      this.mediaRecorder = new MediaRecorder(stream)
+  startRecording() {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        this.audioChunks = []
+        this.mediaRecorder = new MediaRecorder(stream)
 
-      this.showPlayButtonDisabled()
-
-      // Désactive le bouton "Sauvegarder"
-      if (this.hasSaveButtonTarget) {
-        this.saveButtonTarget.disabled = true
-      }
-
-      this.mediaRecorder.ondataavailable = event => {
-        if (event.data.size > 0) {
-          this.audioChunks.push(event.data)
-        }
-      }
-
-      this.mediaRecorder.onstop = () => {
-      setTimeout(() => {
-        if (!this.audioChunks || this.audioChunks.length === 0) {
-          console.warn("No audio chunks available after stop")
-          return
-        }
-
-        this.audioBlob = new Blob(this.audioChunks, { type: "audio/webm" })
-
-        if (this.audioBlob.size === 0) {
-          console.warn("Audio blob is empty")
-          return
-        }
-
-        this.audioUrl = URL.createObjectURL(this.audioBlob)
-        this.setupAudioElement()
-        this.showDecisionButtons()
-        this.stopTimer()
-        console.log("Timer stopped after recording")
+        this.showPlayButtonDisabled()
 
         if (this.hasSaveButtonTarget) {
-          this.saveButtonTarget.disabled = false
+          this.saveButtonTarget.disabled = true
         }
-      }, 150)
-}
 
-      this.buttonTarget.innerHTML = '<i class="fa-solid fa-stop fa-2x"></i>'
-      this.mediaRecorder.start()
-      this.startTimer()
-      if (this.hasTimerTarget) {
-        this.timerTarget.classList.remove("d-none")
-      }
-      console.log("Recording started")
-    })
-    .catch(error => {
-      console.error("Microphone access error:", error)
-      this.recording = false
-      this.hideAllButtons()
-      this.showErrorMessage(error)
-      this.resetToRecordingButton()
-    })
-}
+        this.mediaRecorder.ondataavailable = event => {
+          if (event.data.size > 0) {
+            this.audioChunks.push(event.data)
+          }
+        }
 
+        this.mediaRecorder.onstop = () => {
+          setTimeout(() => {
+            if (!this.audioChunks || this.audioChunks.length === 0) {
+              console.warn("No audio chunks available after stop")
+              return
+            }
+
+            this.audioBlob = new Blob(this.audioChunks, { type: "audio/webm" })
+
+            if (this.audioBlob.size === 0) {
+              console.warn("Audio blob is empty")
+              return
+            }
+
+            this.audioUrl = URL.createObjectURL(this.audioBlob)
+            this.setupAudioElement()
+            this.showDecisionButtons()
+            this.stopTimer()
+            console.log("Timer stopped after recording")
+
+            if (this.hasSaveButtonTarget) {
+              this.saveButtonTarget.disabled = false
+            }
+          }, 150)
+        }
+
+        this.buttonTarget.innerHTML = '<i class="fa-solid fa-stop fa-2x"></i>'
+        this.mediaRecorder.start()
+        this.startTimer()
+        if (this.hasTimerTarget) {
+          this.timerTarget.classList.remove("d-none")
+        }
+        console.log("Recording started")
+      })
+      .catch(error => {
+        console.error("Microphone access error:", error)
+        this.recording = false
+        this.hideAllButtons()
+        this.showErrorMessage(error)
+        this.resetToRecordingButton()
+      })
+  }
 
   stopRecording() {
     if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
@@ -190,10 +189,11 @@ startRecording() {
   }
 
   async saveAndTranscribe() {
-        if (!this.audioBlob || this.audioBlob.size === 0) {
+    if (!this.audioBlob || this.audioBlob.size === 0) {
       this.showCustomNotification("Erreur : aucun enregistrement valide à sauvegarder.", "error")
       return
     }
+
     try {
       const modalElement = document.querySelector('[data-controller~="modal"]')
       if (!modalElement) throw new Error('Modal not found')
@@ -208,7 +208,7 @@ startRecording() {
         cancelText: "Cancel"
       })
 
-      this.showLoadingState("Saving in progress...")
+      this.showLoadingState("Sauvegarde en cours...")
 
       const file = new File([this.audioBlob], "recording.webm", { type: "audio/webm" })
       const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
@@ -217,7 +217,7 @@ startRecording() {
         if (error) {
           console.error("Direct upload failed:", error)
           this.hideLoadingState()
-          this.showCustomNotification("Error during uploading. Try again.", "error")
+          this.showCustomNotification("Erreur lors du téléchargement. Réessayez.", "error")
           return
         }
 
@@ -247,7 +247,7 @@ startRecording() {
           this.hideLoadingState()
           if (data.success) {
             const dreamId = data.id
-            this.showCustomNotification("Dream saved, transcribing...", "info")
+            this.showCustomNotification("Rêve sauvegardé, transcription en cours...", "info")
 
             fetch(`/dreams/${dreamId}/transcribe`, {
               method: "POST",
@@ -259,27 +259,36 @@ startRecording() {
               if (resp.redirected) {
                 window.location.href = resp.url
               } else {
-                this.showCustomNotification("Transcription completed", "success")
+                this.showCustomNotification("Transcription terminée", "success")
                 window.location.href = `/dreams/${dreamId}/transcription`
               }
             })
             .catch(error => {
               console.error("Transcription failed:", error)
-              this.showCustomNotification("Error during transcription", "error")
+              this.showCustomNotification("Erreur lors de la transcription", "error")
               window.location.href = `/dreams/${dreamId}`
             })
           } else {
-            throw new Error(data.errors?.join(", ") || "Unknown error")
+            throw new Error(data.errors?.join(", ") || "Erreur inconnue")
           }
         })
         .catch(error => {
           this.hideLoadingState()
-          this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
+
+          // Gestion spécifique du 401
+          if (error.message.includes('401')) {
+            this.showCustomNotification("🔒 Vous devez être connecté pour sauvegarder un rêve. Connectez-vous ou créez un compte gratuitement !", "error")
+            setTimeout(() => {
+              window.location.href = "/users/sign_in"
+            }, 3000)
+          } else {
+            this.showCustomNotification(`Échec de la sauvegarde : ${error.message}`, "error")
+          }
         })
       })
     } catch (error) {
       if (error.message === 'User cancelled') {
-        this.showCustomNotification("Save cancelled", "info")
+        this.showCustomNotification("Sauvegarde annulée", "info")
       } else {
         this.saveAndTranscribeWithFallback()
       }
@@ -287,18 +296,18 @@ startRecording() {
   }
 
   saveAndTranscribeWithFallback() {
-        if (!this.audioBlob || this.audioBlob.size === 0) {
+    if (!this.audioBlob || this.audioBlob.size === 0) {
       this.showCustomNotification("Erreur : aucun enregistrement valide à sauvegarder.", "error")
       return
     }
 
-    const title = window.prompt("Give a title to your dream:")
+    const title = window.prompt("Donnez un titre à votre rêve:")
     if (!title?.trim()) {
-      this.showCustomNotification("A title is required to save your dream!", "warning")
+      this.showCustomNotification("Un titre est requis pour sauvegarder votre rêve !", "warning")
       return
     }
 
-    this.showLoadingState("Saving in progress...")
+    this.showLoadingState("Sauvegarde en cours...")
 
     const file = new File([this.audioBlob], "recording.webm", { type: "audio/webm" })
     const upload = new DirectUpload(file, "/rails/active_storage/direct_uploads")
@@ -306,7 +315,7 @@ startRecording() {
     upload.create((error, blob) => {
       if (error) {
         this.hideLoadingState()
-        this.showCustomNotification("Error during uploading. Try again.", "error")
+        this.showCustomNotification("Erreur lors du téléchargement. Réessayez.", "error")
         return
       }
 
@@ -336,7 +345,7 @@ startRecording() {
         this.hideLoadingState()
         if (data.success) {
           const dreamId = data.id
-          this.showCustomNotification("Dream saved, transcribing...", "info")
+          this.showCustomNotification("Rêve sauvegardé, transcription en cours...", "info")
 
           fetch(`/dreams/${dreamId}/transcribe`, {
             method: "POST",
@@ -348,28 +357,37 @@ startRecording() {
             if (resp.redirected) {
               window.location.href = resp.url
             } else {
-              this.showCustomNotification("Transcription failed or not redirected", "warning")
+              this.showCustomNotification("Transcription échouée ou non redirigée", "warning")
               window.location.href = `/dreams/${dreamId}`
             }
           })
           .catch(error => {
-            this.showCustomNotification("Error during transcription", "error")
+            this.showCustomNotification("Erreur lors de la transcription", "error")
             window.location.href = `/dreams/${dreamId}`
           })
         } else {
-          throw new Error(data.errors?.join(", ") || "Unknown error")
+          throw new Error(data.errors?.join(", ") || "Erreur inconnue")
         }
       })
       .catch(error => {
         this.hideLoadingState()
-        this.showCustomNotification(`Failed to save dream: ${error.message}`, "error")
+
+        // Gestion spécifique du 401
+        if (error.message.includes('401')) {
+          this.showCustomNotification("🔒 Vous devez être connecté pour sauvegarder un rêve. Connectez-vous ou créez un compte gratuitement !", "error")
+          setTimeout(() => {
+            window.location.href = "/users/sign_in"
+          }, 3000)
+        } else {
+          this.showCustomNotification(`Échec de la sauvegarde : ${error.message}`, "error")
+        }
       })
     })
   }
 
   discardRecording() {
     this.cleanupRecording()
-    this.showCustomNotification("Recording deleted!", "info")
+    this.showCustomNotification("Enregistrement supprimé !", "info")
   }
 
   cleanupRecording() {
@@ -389,7 +407,7 @@ startRecording() {
     loader.className = 'loading-overlay'
     loader.innerHTML = `
       <div class="spinner-border text-light" role="status">
-        <span class="visually-hidden">Loading...</span>
+        <span class="visually-hidden">Chargement...</span>
       </div>
       <p class="mt-3 text-white">${message}</p>
     `
@@ -413,12 +431,12 @@ startRecording() {
   }
 
   showErrorMessage(error) {
-    let message = "An error occurred"
+    let message = "Une erreur s'est produite"
 
     if (error.name === "NotAllowedError") {
-      message = "Microphone access refused. Please allow it in your browser"
+      message = "Accès au microphone refusé. Veuillez l'autoriser dans votre navigateur"
     } else if (error.name === "NotFoundError") {
-      message = "No microphone found on your device"
+      message = "Aucun microphone trouvé sur votre appareil"
     }
 
     this.showCustomNotification(message, "error")
