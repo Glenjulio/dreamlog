@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_22_200632) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_24_144609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,6 +77,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_22_200632) do
     t.index ["user_id"], name: "index_dreams_on_user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.string "role", null: false
+    t.text "content", null: false
+    t.jsonb "metadata", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id", "created_at"], name: "index_messages_on_conversation_id_and_created_at"
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
+    t.index ["role"], name: "index_messages_on_role"
+  end
+
   create_table "personalities", force: :cascade do |t|
     t.integer "age"
     t.string "job"
@@ -123,6 +135,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_22_200632) do
   add_foreign_key "analyses", "transcriptions"
   add_foreign_key "conversations", "users"
   add_foreign_key "dreams", "users"
+  add_foreign_key "messages", "conversations"
   add_foreign_key "personalities", "users"
   add_foreign_key "transcriptions", "dreams"
 end
