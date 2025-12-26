@@ -28,6 +28,14 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :conversations, only: [:index, :show, :create, :destroy] do
+    member do
+      patch :archive
+      patch :unarchive
+    end
+    resources :messages, only: [:create]
+  end
+
   # Route pour générer l'enregistrement
   post 'dreams/upload_audio', to: 'dreams#upload_audio'
 
