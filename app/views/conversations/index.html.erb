@@ -8,7 +8,7 @@
         <h1 class="dreamlog-title">
           <i class="fas fa-comments me-3"></i>Mes Conversations
         </h1>
-        <%= link_to conversations_path, method: :post, class: "gradient-button" do %>
+        <%= button_to conversations_path, method: :post, class: "gradient-button", form: { data: { turbo: true } } do %>
           <i class="fas fa-plus me-2"></i>Nouvelle conversation
         <% end %>
       </div>
