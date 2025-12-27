@@ -1,0 +1,98 @@
+<!-- app/views/conversations/index.html.erb -->
+<div class="container-fluid min-vh-100 py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="dreamlog-title">
+          <i class="fas fa-comments me-3"></i>Mes Conversations
+        </h1>
+        <%= link_to conversations_path, method: :post, class: "gradient-button" do %>
+          <i class="fas fa-plus me-2"></i>Nouvelle conversation
+        <% end %>
+      </div>
+
+      <!-- Conversations actives -->
+      <div class="mb-5">
+        <h2 class="subtitle mb-3">
+          <i class="fas fa-inbox me-2"></i>Conversations actives
+        </h2>
+
+        <% if @conversations.any? %>
+          <div class="row g-3">
+            <% @conversations.each do |conversation| %>
+              <div class="col-12 col-md-6 col-lg-4">
+                <div class="card glass-card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title text-white">
+                      <%= conversation.title %>
+                    </h5>
+                    <p class="card-text text-white-50 small">
+                      <%= conversation.summary %>
+                    </p>
+                    <p class="card-text text-white-50 small">
+                      <i class="far fa-clock me-1"></i>
+                      <%= time_ago_in_words(conversation.updated_at) %> ago
+                    </p>
+                    <div class="d-flex gap-2 mt-3">
+                      <%= link_to conversation_path(conversation), class: "btn btn-sm btn-outline-light" do %>
+                        <i class="fas fa-eye me-1"></i>Voir
+                      <% end %>
+                      <%= link_to archive_conversation_path(conversation), method: :patch, class: "btn btn-sm btn-outline-warning" do %>
+                        <i class="fas fa-archive me-1"></i>Archiver
+                      <% end %>
+                      <%= link_to conversation_path(conversation), method: :delete, data: { confirm: "Êtes-vous sûr ?" }, class: "btn btn-sm btn-outline-danger" do %>
+                        <i class="fas fa-trash me-1"></i>Supprimer
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="alert alert-info glass-card">
+            <i class="fas fa-info-circle me-2"></i>
+            Aucune conversation active. Créez-en une pour commencer !
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Conversations archivées -->
+      <% if @archived_conversations.any? %>
+        <div class="mb-5">
+          <h2 class="subtitle mb-3">
+            <i class="fas fa-archive me-2"></i>Conversations archivées
+          </h2>
+
+          <div class="row g-3">
+            <% @archived_conversations.each do |conversation| %>
+              <div class="col-12 col-md-6 col-lg-4">
+                <div class="card glass-card h-100 opacity-75">
+                  <div class="card-body">
+                    <h5 class="card-title text-white">
+                      <%= conversation.title %>
+                    </h5>
+                    <p class="card-text text-white-50 small">
+                      <%= conversation.summary %>
+                    </p>
+                    <div class="d-flex gap-2 mt-3">
+                      <%= link_to unarchive_conversation_path(conversation), method: :patch, class: "btn btn-sm btn-outline-success" do %>
+                        <i class="fas fa-undo me-1"></i>Restaurer
+                      <% end %>
+                      <%= link_to conversation_path(conversation), method: :delete, data: { confirm: "Êtes-vous sûr ?" }, class: "btn btn-sm btn-outline-danger" do %>
+                        <i class="fas fa-trash me-1"></i>Supprimer
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>
