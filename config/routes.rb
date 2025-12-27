@@ -39,9 +39,6 @@ Rails.application.routes.draw do
   # Route pour générer l'enregistrement
   post 'dreams/upload_audio', to: 'dreams#upload_audio'
 
-  # Route pour la page chat IA
-  get '/chat', to: 'pages#chat', as: :chat
-
   # Active Storage routes
   if Rails.application.config.respond_to?(:active_storage) && Rails.application.config.active_storage.routes
     draw(:active_storage)
