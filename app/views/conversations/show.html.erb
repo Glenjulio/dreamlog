@@ -61,18 +61,29 @@
       <!-- Formulaire d'envoi de message -->
       <div class="card glass-card">
         <div class="card-body">
-          <%= form_with model: @new_message, url: conversation_messages_path(@conversation), method: :post, local: true do |f| %>
-            <div class="input-group">
-              <%= f.text_area :content,
-                  class: "form-control bg-dark text-white border-0",
-                  placeholder: "Tapez votre message...",
-                  rows: 3,
-                  style: "resize: none;" %>
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-paper-plane me-2"></i>Envoyer
-              </button>
-            </div>
-          <% end %>
+          <%= form_with model: @new_message,
+              url: conversation_messages_path(@conversation),
+              method: :post,
+              local: true,
+              data: {
+                controller: "chat-form",
+                chat_form_target: "form"
+              } do |f| %>
+          <div class="input-group">
+            <%= f.text_area :content,
+                class: "form-control bg-dark text-white border-0",
+                placeholder: "Tapez votre message... (Enter pour envoyer, Shift+Enter pour nouvelle ligne)",
+                rows: 3,
+                style: "resize: none;",
+                data: {
+                  chat_form_target: "textarea",
+                  action: "keydown->chat-form#handleKeydown"
+                } %>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-paper-plane me-2"></i>Envoyer
+            </button>
+          </div>
+        <% end %>
         </div>
       </div>
 
